@@ -1,1 +1,2 @@
-export { Toast } from './Toast';
+export { ReactToast } from './Toast';
+export type { ToastProps } from '../types';

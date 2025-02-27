@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { ToastProps } from '../types';
 import styles from './Toast.module.css';
 
-export const Toast: React.FC<ToastProps> = ({
+export const ReactToast: React.FC<ToastProps> = ({
   message,
   type = 'success',
   duration = 3000,
@@ -18,9 +18,11 @@ export const Toast: React.FC<ToastProps> = ({
     return () => clearTimeout(timer);
   }, [duration, onHide]);
 
+  if (!visible) return null;
+
   return (
-    <div className={[styles.toastContainer, visible ? styles.visible : ''].join(' ')}>
-      <div className={[styles.toastContent, styles[type]].join(' ')}>{message}</div>
+    <div className={`${styles.toastContainer} ${visible ? styles.visible : ''}`}>
+      <div className={`${styles.toastContent} ${styles[type]}`}>{message}</div>
     </div>
   );
 };
