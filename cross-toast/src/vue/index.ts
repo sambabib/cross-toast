@@ -1,1 +1,2 @@
-export { default as Toast } from './Toast.vue';
+export { default as VueToast } from './Toast.vue';
+export type { ToastProps } from '../types';
