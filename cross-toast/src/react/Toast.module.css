@@ -1,9 +1,28 @@
 .toastContainer {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
   z-index: 1000;
   max-width: 300px;
+}
+
+/* Position classes */
+.topRight {
+  top: 20px;
+  right: 20px;
+}
+
+.topLeft {
+  top: 20px;
+  left: 20px;
+}
+
+.bottomRight {
+  bottom: 20px;
+  right: 20px;
+}
+
+.bottomLeft {
+  bottom: 20px;
+  left: 20px;
 }
 
 .toastContainer:not(.visible) .toastContent {
@@ -42,6 +61,21 @@
 @keyframes slideIn {
   from {
     transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+.topLeft .toastContent,
+.bottomLeft .toastContent {
+  animation-name: slideInLeft;
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
   }
 
   to {

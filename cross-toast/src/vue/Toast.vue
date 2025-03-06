@@ -1,14 +1,14 @@
 <template>
-  <transition name="toast">
-    <div v-if="visible" class="toast-container" :class="[type]">
+  <transition :name="animationName">
+    <div v-if="visible" :class="['toast-container', position, type]">
       <div class="toast-content">{{ message }}</div>
     </div>
   </transition>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue';
-import type { ToastProps } from '../types';
+import { defineComponent, ref, onMounted, computed } from 'vue';
+import type { ToastProps, ToastPosition } from '../types';
 
 export default defineComponent({
   name: 'VueToast',
@@ -25,20 +25,33 @@ export default defineComponent({
       type: Number,
       default: 3000,
     },
+    position: {
+      type: String as () => ToastPosition,
+      default: 'bottom-right',
+    },
   },
   emits: ['hide'],
   setup(props, { emit }) {
     const visible = ref(true);
 
+    const animationName = computed(() => {
+      return props.position.includes('left') ? 'toast-left' : 'toast-right';
+    });
+
     onMounted(() => {
       setTimeout(() => {
         visible.value = false;
-        emit('hide');
       }, props.duration);
+
+      // Emit hide after animation completes
+      setTimeout(() => {
+        emit('hide');
+      }, props.duration + 500); // duration + animation time
     });
 
     return {
       visible,
+      animationName,
     };
   },
 });
@@ -47,10 +60,29 @@ export default defineComponent({
 <style scoped>
 .toast-container {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
   z-index: 1000;
   max-width: 300px;
+}
+
+/* Position classes */
+.top-right {
+  top: 20px;
+  right: 20px;
+}
+
+.top-left {
+  top: 20px;
+  left: 20px;
+}
+
+.bottom-right {
+  bottom: 20px;
+  right: 20px;
+}
+
+.bottom-left {
+  bottom: 20px;
+  left: 20px;
 }
 
 .toast-content {
@@ -74,17 +106,36 @@ export default defineComponent({
   border-color: #f44336;
 }
 
-.toast-enter-active {
-  animation: slideIn 0.3s ease-out;
+/* Animation classes */
+.toast-right-enter-active {
+  animation: slideInRight 0.3s ease-out;
 }
 
-.toast-leave-active {
+.toast-right-leave-active {
   animation: fadeOut 0.5s ease-in-out forwards;
 }
 
-@keyframes slideIn {
+.toast-left-enter-active {
+  animation: slideInLeft 0.3s ease-out;
+}
+
+.toast-left-leave-active {
+  animation: fadeOut 0.5s ease-in-out forwards;
+}
+
+@keyframes slideInRight {
   from {
     transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
   }
 
   to {
