@@ -2,15 +2,23 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { render, screen, act } from '@testing-library/react';
 import { ReactToast } from '../../react';
+import styles from '../../react/Toast.module.css';
 
 // Mock the CSS module
 vi.mock('../../react/Toast.module.css', () => ({
   default: {
     toastContainer: 'toastContainer',
-    visible: 'visible',
     toastContent: 'toastContent',
     success: 'success',
-    error: 'error'
+    error: 'error',
+    visible: 'visible',
+    topRight: 'topRight',
+    topLeft: 'topLeft',
+    bottomRight: 'bottomRight',
+    bottomLeft: 'bottomLeft',
+    slideIn: 'slideIn',
+    fadeOut: 'fadeOut',
+    slideInLeft: 'slideInLeft'
   }
 }));
 
@@ -44,11 +52,20 @@ describe('ReactToast', () => {
 
     expect(screen.getByText('Test message')).toBeInTheDocument();
 
+    // Advance past duration
     await act(() => {
-      vi.advanceTimersByTime(150);
-      return Promise.resolve();
+      vi.advanceTimersByTime(100);
     });
 
+    // Should still be in document but not visible
+    expect(screen.getByText('Test message')).toBeInTheDocument();
+
+    // Advance through exit animation
+    await act(() => {
+      vi.advanceTimersByTime(500);
+    });
+
+    // Now it should be removed and onHide called
     expect(screen.queryByText('Test message')).not.toBeInTheDocument();
     expect(onHide).toHaveBeenCalledTimes(1);
     vi.useRealTimers();
@@ -84,8 +101,120 @@ describe('ReactToast', () => {
       return Promise.resolve();
     });
 
-    // The component should be removed from DOM after the duration
+    // Should no longer be visible but still in DOM
+    expect(toastContainer).not.toHaveClass('visible');
+    expect(container.firstChild).not.toBeNull();
+
+    // Advance through exit animation
+    await act(() => {
+      vi.advanceTimersByTime(500);
+    });
+
+    // Now the component should be removed
     expect(container.firstChild).toBeNull();
     vi.useRealTimers();
+  });
+
+  it('applies correct animation classes during exit', async () => {
+    vi.useFakeTimers();
+    const { container } = render(<ReactToast message="Test message" duration={100} />);
+    const toastContainer = container.firstChild as HTMLElement;
+    const toastContent = container.querySelector(`.${styles.toastContent}`) as HTMLElement;
+
+    // Initially should be visible with slide in
+    expect(toastContainer).toHaveClass('visible');
+    expect(toastContent.className).toContain('toastContent');
+
+    // Advance to start exit animation
+    await act(() => {
+      vi.advanceTimersByTime(100);
+    });
+
+    // Should no longer be visible (which triggers fadeOut animation via CSS)
+    expect(toastContainer).not.toHaveClass('visible');
+
+    // Advance through exit animation
+    await act(() => {
+      vi.advanceTimersByTime(300);
+    });
+
+    // Component should be unmounted after animation
+    expect(container.firstChild).toBeNull();
+    vi.useRealTimers();
+  });
+
+  it('waits for animation to complete before unmounting', async () => {
+    vi.useFakeTimers();
+    const onHide = vi.fn();
+    const { container } = render(
+      <ReactToast message="Test message" duration={100} onHide={onHide} />
+    );
+    const toastContainer = container.firstChild as HTMLElement;
+
+    // Initially should be visible
+    expect(toastContainer).toHaveClass('visible');
+
+    // Advance to start exit animation
+    await act(() => {
+      vi.advanceTimersByTime(100);
+    });
+
+    // Should no longer be visible but still mounted
+    expect(toastContainer).not.toHaveClass('visible');
+    expect(container.firstChild).not.toBeNull();
+    expect(onHide).not.toHaveBeenCalled();
+
+    // Complete animation
+    await act(() => {
+      vi.advanceTimersByTime(500); // Full duration of fadeOut animation
+    });
+
+    // Now it should be unmounted and onHide called
+    expect(container.firstChild).toBeNull();
+    expect(onHide).toHaveBeenCalledTimes(1);
+    vi.useRealTimers();
+  });
+
+  // New position-related tests
+  it('uses bottom-right position by default', () => {
+    const { container } = render(<ReactToast message="Test message" />);
+    const toastContainer = container.firstChild as HTMLElement;
+    expect(toastContainer.className).toContain('bottomRight');
+  });
+
+  it('applies correct class for top-right position', () => {
+    const { container } = render(
+      <ReactToast message="Test message" position="top-right" />
+    );
+    const toastContainer = container.firstChild as HTMLElement;
+    expect(toastContainer.className).toContain('topRight');
+  });
+
+  it('applies correct class for top-left position', () => {
+    const { container } = render(
+      <ReactToast message="Test message" position="top-left" />
+    );
+    const toastContainer = container.firstChild as HTMLElement;
+    expect(toastContainer.className).toContain('topLeft');
+  });
+
+  it('applies correct class for bottom-left position', () => {
+    const { container } = render(
+      <ReactToast message="Test message" position="bottom-left" />
+    );
+    const toastContainer = container.firstChild as HTMLElement;
+    expect(toastContainer.className).toContain('bottomLeft');
+  });
+
+  it('maintains other classes when position is changed', () => {
+    const { container } = render(
+      <ReactToast message="Test message" position="top-left" type="success" />
+    );
+    const toastContent = container.querySelector('.toastContent') as HTMLElement;
+    const toastContainer = container.firstChild as HTMLElement;
+
+    expect(toastContainer.className).toContain('topLeft');
+    expect(toastContainer.className).toContain('visible');
+    expect(toastContent.className).toContain('success');
   });
 });
