@@ -1,13 +1,13 @@
 <template>
   <transition :name="animationName">
-    <div v-if="visible" :class="['toast-container', position, type]">
+    <div v-if="show" :class="['toast-container', position, type]">
       <div class="toast-content">{{ message }}</div>
     </div>
   </transition>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, computed } from 'vue';
+import { defineComponent, ref, onMounted, computed, onBeforeUnmount } from 'vue';
 import type { ToastProps, ToastPosition } from '../types';
 
 export default defineComponent({
@@ -32,25 +32,25 @@ export default defineComponent({
   },
   emits: ['hide'],
   setup(props, { emit }) {
-    const visible = ref(true);
+    const show = ref(true);
+    let timer: null | ReturnType<typeof setTimeout> = null;
 
     const animationName = computed(() => {
       return props.position.includes('left') ? 'toast-left' : 'toast-right';
     });
 
     onMounted(() => {
-      setTimeout(() => {
-        visible.value = false;
+      timer = setTimeout(() => {
+        show.value = false;
       }, props.duration);
+    });
 
-      // Emit hide after animation completes
-      setTimeout(() => {
-        emit('hide');
-      }, props.duration + 500); // duration + animation time
+    onBeforeUnmount(() => {
+      if (timer) clearTimeout(timer);
     });
 
     return {
-      visible,
+      show,
       animationName,
     };
   },
@@ -96,6 +96,7 @@ export default defineComponent({
   justify-content: space-between;
   align-items: center;
   border-left: 2px solid;
+  font-size: 14px;
 }
 
 .success .toast-content {
@@ -106,50 +107,40 @@ export default defineComponent({
   border-color: #f44336;
 }
 
-/* Animation classes */
+/* Improved Animation classes */
 .toast-right-enter-active {
-  animation: slideInRight 0.3s ease-out;
+  transition: all 0.3s ease-out;
 }
 
 .toast-right-leave-active {
-  animation: fadeOut 0.5s ease-in-out forwards;
+  transition: all 0.5s ease-in-out;
+}
+
+.toast-right-enter-from {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.toast-right-leave-to {
+  transform: translateX(10%);
+  opacity: 0;
 }
 
 .toast-left-enter-active {
-  animation: slideInLeft 0.3s ease-out;
+  transition: all 0.3s ease-out;
 }
 
 .toast-left-leave-active {
-  animation: fadeOut 0.5s ease-in-out forwards;
+  transition: all 0.5s ease-in-out;
 }
 
-@keyframes slideInRight {
-  from {
-    transform: translateX(100%);
-  }
-
-  to {
-    transform: translateX(0);
-  }
+.toast-left-enter-from {
+  transform: translateX(-100%);
+  opacity: 0;
 }
 
-@keyframes slideInLeft {
-  from {
-    transform: translateX(-100%);
-  }
-
-  to {
-    transform: translateX(0);
-  }
-}
-
-@keyframes fadeOut {
-  from {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
-  }
+.toast-left-leave-to {
+  transform: translateX(-10%);
+  opacity: 0;
 }
 </style>
