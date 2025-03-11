@@ -35,5 +35,8 @@ export default defineConfig({
         },
       },
     },
+    outDir: 'dist',
   },
+  root: '.',
+  publicDir: 'public',
 });
