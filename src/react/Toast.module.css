@@ -1,0 +1,196 @@
+:root {
+  /* Light theme (default) */
+  --toast-bg-light: white;
+  --toast-text-light: #333;
+  --toast-shadow-light: rgba(0, 0, 0, 0.1);
+  --toast-success-light: #4CAF50;
+  --toast-error-light: #f44336;
+  
+  /* Dark theme */
+  --toast-bg-dark: #333;
+  --toast-text-dark: #f0f0f0;
+  --toast-shadow-dark: rgba(0, 0, 0, 0.3);
+  --toast-success-dark: #5CDF60;
+  --toast-error-dark: #ff6b6b;
+}
+
+/* Use light theme by default */
+.toastContainer {
+  position: fixed;
+  z-index: 1000;
+  max-width: 300px;
+  --toast-bg: var(--toast-bg-light);
+  --toast-text: var(--toast-text-light);
+  --toast-shadow: var(--toast-shadow-light);
+  --toast-success: var(--toast-success-light);
+  --toast-error: var(--toast-error-light);
+}
+
+/* Apply dark theme when dark mode is detected */
+@media (prefers-color-scheme: dark) {
+  .toastContainer {
+    --toast-bg: var(--toast-bg-dark);
+    --toast-text: var(--toast-text-dark);
+    --toast-shadow: var(--toast-shadow-dark);
+    --toast-success: var(--toast-success-dark);
+    --toast-error: var(--toast-error-dark);
+  }
+}
+
+/* Position classes */
+.topRight {
+  top: 20px;
+  right: 20px;
+}
+
+.topLeft {
+  top: 20px;
+  left: 20px;
+}
+
+.bottomRight {
+  bottom: 20px;
+  right: 20px;
+}
+
+.bottomLeft {
+  bottom: 20px;
+  left: 20px;
+}
+
+.toastContainer:not(.visible) .toastContent {
+  animation: fadeOut 0.5s ease-in-out forwards;
+}
+
+.toastContainer.visible .toastContent {
+  animation: slideIn 0.3s ease-out;
+}
+
+.toastContent {
+  background-color: var(--toast-bg);
+  color: var(--toast-text);
+  padding: 12px 24px;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px var(--toast-shadow);
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-left: 4px solid;
+  font-size: 14px;
+  opacity: 0;
+  transform: translateX(100%);
+  will-change: transform, opacity;
+}
+
+.toastContainer.visible .toastContent {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 0.3s cubic-bezier(0.2, 0, 0, 1), 
+              transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.toastContent.exit {
+  opacity: 0;
+  transform: translateX(100%);
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 1, 1), 
+              transform 0.3s cubic-bezier(0.4, 0, 1, 1);
+}
+
+.topLeft .toastContent,
+.bottomLeft .toastContent {
+  transform: translateX(-100%);
+}
+
+.topLeft.visible .toastContent,
+.bottomLeft.visible .toastContent {
+  transform: translateX(0);
+}
+
+.topLeft .toastContent.exit,
+.bottomLeft .toastContent.exit {
+  transform: translateX(-100%);
+}
+
+.success {
+  border-color: var(--toast-success);
+}
+
+.error {
+  border-color: var(--toast-error);
+}
+
+.info {
+  border-left: 4px solid #2196f3;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.topLeft .toastContent,
+.bottomLeft .toastContent {
+  animation-name: slideInLeft;
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+.topLeft .toastContent.exit,
+.bottomLeft .toastContent.exit {
+  animation: fadeOutLeft 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeOutLeft {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+}
+
+/* Add these to the existing CSS */
+.light {
+  --toast-bg: var(--toast-bg-light);
+  --toast-text: var(--toast-text-light);
+  --toast-shadow: var(--toast-shadow-light);
+  --toast-success: var(--toast-success-light);
+  --toast-error: var(--toast-error-light);
+}
+
+.dark {
+  --toast-bg: var(--toast-bg-dark);
+  --toast-text: var(--toast-text-dark);
+  --toast-shadow: var(--toast-shadow-dark);
+  --toast-success: var(--toast-success-dark);
+  --toast-error: var(--toast-error-dark);
+}
