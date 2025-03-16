@@ -126,16 +126,19 @@ describe('VueToast', () => {
     expect(container.classes()).toContain('success');
   });
 
-  it('uses correct animation name based on position', () => {
+  it('applies correct transform based on position', () => {
     const leftWrapper = mount(VueToast, {
       props: { message: 'Test message', position: 'top-left' }
     });
-    expect(leftWrapper.vm.animationName).toBe('toast-left');
-
     const rightWrapper = mount(VueToast, {
       props: { message: 'Test message', position: 'top-right' }
     });
-    expect(rightWrapper.vm.animationName).toBe('toast-right');
+  
+    // Check initial transform direction
+    expect(window.getComputedStyle(leftWrapper.find('.toast-content').element).transform)
+      .toContain('translateX(-100%)');
+    expect(window.getComputedStyle(rightWrapper.find('.toast-content').element).transform)
+      .toContain('translateX(100%)');
   });
 
   it('properly cleans up timer when unmounted', async () => {
@@ -172,35 +175,21 @@ describe('VueToast', () => {
     vi.useRealTimers();
   });
 
-  it('applies transition classes during animation', async () => {
-    // This test is conceptual as we can't easily test Vue transitions with JSDOM
-    // In a real browser environment, the following classes would be applied:
-
+  it('applies transition styles based on CSS classes', () => {
     const wrapper = mount(VueToast, {
       props: { message: 'Test message', position: 'top-right' }
     });
 
-    // Verify animation name computation
-    expect(wrapper.vm.animationName).toBe('toast-right');
-
-    // For right-positioned toasts:
-    // - toast-right-enter-from: transform: translateX(100%); opacity: 0;
-    // - toast-right-enter-active: transition: all 0.3s ease-out;
-    // - toast-right-leave-to: transform: translateX(10%); opacity: 0;
-    // - toast-right-leave-active: transition: all 0.5s ease-in-out;
-
+    // Check that the container has the visible class
+    expect(wrapper.find('.toast-container').classes()).toContain('visible');
+    
     // For left-positioned toasts:
     const leftWrapper = mount(VueToast, {
       props: { message: 'Test message', position: 'top-left' }
     });
-
-    // Verify animation name computation for left position
-    expect(leftWrapper.vm.animationName).toBe('toast-left');
-
-    // - toast-left-enter-from: transform: translateX(-100%); opacity: 0;
-    // - toast-left-enter-active: transition: all 0.3s ease-out;
-    // - toast-left-leave-to: transform: translateX(-10%); opacity: 0;
-    // - toast-left-leave-active: transition: all 0.5s ease-in-out;
+    
+    // Check that the container has the visible class
+    expect(leftWrapper.find('.toast-container').classes()).toContain('visible');
   });
 
   it('responds to event emission after animation time', async () => {
@@ -291,5 +280,31 @@ describe('VueToast', () => {
     // After enter animation starts
     await wrapper.vm.$nextTick();
     expect(container.classes()).toContain('toast-left-enter-active');
+  });
+
+  it('applies visible class when mounted', () => {
+    const wrapper = mount(VueToast, {
+      props: { message: 'Test message' }
+    });
+    expect(wrapper.find('.toast-container').classes()).toContain('visible');
+  });
+
+  it('applies exit class when animation starts', async () => {
+    vi.useFakeTimers();
+    const wrapper = mount(VueToast, {
+      props: { message: 'Test message', duration: 100 }
+    });
+
+    // Initially no exit class
+    expect(wrapper.find('.toast-content').classes()).not.toContain('exit');
+
+    // Advance time to trigger exit animation
+    await vi.advanceTimersByTimeAsync(100);
+    await wrapper.vm.$nextTick();
+
+    // Now exit class should be applied
+    expect(wrapper.find('.toast-content').classes()).toContain('exit');
+    
+    vi.useRealTimers();
   });
 });

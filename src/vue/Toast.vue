@@ -1,13 +1,11 @@
 <template>
-  <transition :name="animationName" @after-leave="onAfterLeave">
-    <div v-if="show" :class="['toast-container', position, type, theme]">
-      <div class="toast-content">{{ message }}</div>
-    </div>
-  </transition>
+  <div v-if="show" :class="['toast-container', position, type, theme, isVisible ? 'visible' : '']">
+    <div :class="['toast-content', exiting ? 'exit' : '']">{{ message }}</div>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, computed, onBeforeUnmount } from 'vue';
+import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue';
 import type { ToastProps, ToastPosition } from '../types';
 
 export default defineComponent({
@@ -37,19 +35,29 @@ export default defineComponent({
   emits: ['hide'],
   setup(props, { emit }) {
     const show = ref(true);
+    const isVisible = ref(false);
+    const exiting = ref(false);
     let timer: null | ReturnType<typeof setTimeout> = null;
-
-    const animationName = computed(() => {
-      return props.position.includes('left') ? 'toast-left' : 'toast-right';
-    });
 
     const onAfterLeave = () => {
       emit('hide');
     };
 
     onMounted(() => {
+      // Set a small delay before adding the visible class to ensure the initial state is rendered
+      setTimeout(() => {
+        isVisible.value = true;
+      }, 10);
+
       timer = setTimeout(() => {
-        show.value = false;
+        // Start exit animation
+        exiting.value = true;
+        
+        // After animation completes, hide the toast
+        setTimeout(() => {
+          show.value = false;
+          onAfterLeave();
+        }, 300); // Match CSS transition duration
       }, props.duration);
     });
 
@@ -59,7 +67,8 @@ export default defineComponent({
 
     return {
       show,
-      animationName,
+      isVisible,
+      exiting,
       onAfterLeave,
     };
   },
@@ -139,72 +148,85 @@ export default defineComponent({
   align-items: center;
   border-left: 4px solid;
   font-size: 14px;
+  opacity: 0;
+  transform: translateX(100%);
   will-change: transform, opacity;
+  transition: transform 300ms cubic-bezier(0.2, 0, 0, 1),
+              opacity 300ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.toast-container.visible .toast-content {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.toast-content.exit {
+  opacity: 0;
+  transform: translateX(100%);
 }
 
 /* Types */
 .success .toast-content { border-color: var(--toast-success); }
 .error .toast-content { border-color: var(--toast-error); }
-
-/* Right-side animations */
-.toast-right-enter-active .toast-content {
-  animation: slideInRight 300ms cubic-bezier(0.2, 0, 0, 1) forwards;
+.toast-content {
+  background-color: var(--toast-bg);
+  color: var(--toast-text);
+  padding: 12px 24px;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px var(--toast-shadow);
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-left: 4px solid;
+  font-size: 14px;
+  opacity: 0;
+  transform: translateX(100%);
+  will-change: transform, opacity;
+  transition: transform 300ms cubic-bezier(0.2, 0, 0, 1),
+              opacity 300ms cubic-bezier(0.2, 0, 0, 1);
 }
 
-.toast-right-leave-active .toast-content {
-  animation: slideOutRight 500ms cubic-bezier(0.4, 0, 1, 1) forwards;
+/* Visible state */
+.toast-container.visible .toast-content {
+  opacity: 1;
+  transform: translateX(0);
 }
 
-/* Left-side animations */
-.toast-left-enter-active .toast-content {
-  animation: slideInLeft 300ms cubic-bezier(0.2, 0, 0, 1) forwards;
+/* Exit state */
+.toast-content.exit {
+  opacity: 0;
+  transform: translateX(100%);
 }
 
-.toast-left-leave-active .toast-content {
-  animation: slideOutLeft 500ms cubic-bezier(0.4, 0, 1, 1) forwards;
+/* Left positions */
+.top-left .toast-content,
+.bottom-left .toast-content {
+  transform: translateX(-100%);
 }
 
-@keyframes slideInRight {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+.top-right .toast-content,
+.bottom-right .toast-content {
+  transform: translateX(100%);
 }
 
-@keyframes slideOutRight {
-  from {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateX(10%);
-    opacity: 0;
-  }
+.top-left.visible .toast-content,
+.bottom-left.visible .toast-content {
+  transform: translateX(0);
 }
 
-@keyframes slideInLeft {
-  from {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+.top-right.visible .toast-content,
+.bottom-right.visible .toast-content {
+  transform: translateX(0);
 }
 
-@keyframes slideOutLeft {
-  from {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateX(-10%);
-    opacity: 0;
-  }
+.top-left .toast-content.exit,
+.bottom-left .toast-content.exit {
+  transform: translateX(-100%);
+}
+
+.top-right .toast-content.exit,
+.bottom-right .toast-content.exit {
+  transform: translateX(100%);
 }
 </style>
