@@ -3,53 +3,225 @@ import { createRoot } from 'react-dom/client';
 import { createApp, h } from 'vue';
 import { ReactToast } from '../react/Toast';
 import VueToast from '../vue/Toast.vue';
-import type { ToastPosition, ToastType } from '../types';
 
 // Add demo styles
 const style = document.createElement('style');
 style.textContent = `
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: "Host Grotesk", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     margin: 0;
-    padding: 20px;
-    background-color: #f5f5f5;
+    padding: 0;
+    background: #f8f9f9;
   }
   .container {
     max-width: 800px;
     margin: 0 auto;
-    background: white;
     padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
-  h1 { color: #333; margin-bottom: 2rem; }
+  .toast-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .toast-header h1 { 
+    color: #333; 
+    font-size: 2.5rem;
+    letter-spacing: -1px;
+    line-height: 0 !important;
+    font-weight: bold;
+  }
+  .toast-header p { 
+    color: #666; 
+    font-size: 1.2rem;
+    letter-spacing: -0.5px;
+    line-height: 0;
+    font-weight: 600;
+  }
+  .doc-section {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    height: fit-content;
+    padding: 2rem;
+  }
+  .predemo-tabs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    margin: 4rem 0;
+    text-align: center;
+  }
+  .predemo-tabs h2 {
+    font-size: 1.8rem;
+    letter-spacing: -1px;
+    color: #333;
+    margin: 0;
+    font-weight: bold;
+  }
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+    max-width: 500px;
+  }
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .step-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #333;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  .step p {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #666;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+  }
+  .step code {
+    font-family: monospace;
+    background: #f1f1f1;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #333;
+  }
+  .doc-toast {
+    background: #333;
+    color: white;
+    font-size: 14px;
+  }
+  .doc-github {
+    background: #fdfefe;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    color: #333;
+    padding: 16px 32px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .demo-tabs {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    align-items: center;
+    justify-content: center;
+  }
+  .tab-buttons {
+    background: #efefef;
+    max-width: 400px;
+    padding: .4rem .35rem;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .tab-button {
+    background: none;
+    border: none;
+    padding: .4rem 4rem;
+    color: #666;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 10px;
+  }
+  .tab-button.active {
+    background: #fdfefe;
+    color: #333;
+    padding: .8rem 4rem;
+    transition: background 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
   .demo-section {
     margin-bottom: 2rem;
-    padding: 1rem;
-    border: 1px solid #eee;
-    border-radius: 4px;
+    padding: 2rem;
+    border-radius: 10px;
+    background: #fdfefe;
+    opacity: 0;
+    visibility: hidden;
+    height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
   }
-  .demo-section h2 { color: #666; }
+  .demo-section.active {
+    opacity: 1;
+    visibility: visible;
+    height: auto;
+    overflow: visible;
+  }
+  .demo-section h2 { 
+    color: #333;
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+  }
   button {
-    background: #4CAF50;
-    color: white;
     border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
+    padding: 16px 32px;
+    border-radius: 10px;
     cursor: pointer;
-    margin: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
   }
-  button:hover { background: #45a049; }
+  .demo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
   .controls {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  .controls button {
+    background: #fdfefe;
+    color: #333;
+    border: 1px solid #eee;
+  }
+  .controls button:hover,
+  .controls button.active {
+    background: #333;
+    color: white;
+    border-color: #333;
+  }
+  .theme-buttons {
     display: flex;
     gap: 1rem;
-    flex-wrap: wrap;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
+    justify-content: center;
   }
-  select {
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
+  .code-block {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #333;
+    white-space: pre;
+    overflow-x: auto;
   }
 `;
 document.head.appendChild(style);
@@ -58,50 +230,99 @@ document.head.appendChild(style);
 const container = document.createElement('div');
 container.innerHTML = `
   <div class="container">
-    <h1>Cross-Toast Demo</h1>
-    
-    <div class="demo-section">
-      <h2>React Toast</h2>
-      <div class="controls">
-        <select id="react-position">
-          <option value="top-right">Top Right</option>
-          <option value="top-left">Top Left</option>
-          <option value="bottom-right">Bottom Right</option>
-          <option value="bottom-left">Bottom Left</option>
-        </select>
-        <select id="react-type">
-          <option value="success">Success</option>
-          <option value="error">Error</option>
-        </select>
-        <select id="react-theme">
-          <option value="auto">Auto Theme</option>
-          <option value="light">Light Theme</option>
-          <option value="dark">Dark Theme</option>
-        </select>
-      </div>
-      <button onclick="window.showReactToast()">Show React Toast</button>
+    <div class="toast-header">
+      <h1>Cross Toast</h1>
+      <p> Lightweight, Beautiful, Framework agnostic toast.</p>
     </div>
 
-    <div class="demo-section">
-      <h2>Vue Toast</h2>
-      <div class="controls">
-        <select id="vue-position">
-          <option value="top-right">Top Right</option>
-          <option value="top-left">Top Left</option>
-          <option value="bottom-right">Bottom Right</option>
-          <option value="bottom-left">Bottom Left</option>
-        </select>
-        <select id="vue-type">
-          <option value="success">Success</option>
-          <option value="error">Error</option>
-        </select>
-        <select id="vue-theme">
-          <option value="auto">Auto Theme</option>
-          <option value="light">Light Theme</option>
-          <option value="dark">Dark Theme</option>
-        </select>
+    <div class="doc-section">
+      <button class="doc-toast" onclick="window.showQuickToast()">Try Cross Toast</button>
+      <button class="doc-github" onclick="window.location.href='https://github.com/sambabib/cross-toast">Github</button>
+    </div>
+
+    <div class="predemo-tabs">
+      <h2>How to Use</h2>
+      <div class="steps">
+        <div class="step">
+          <span class="step-number">1</span>
+          <p>Install the package for your framework</p>
+          <code>npm install @cross-toast/react</code>
+        </div>
+        <div class="step">
+          <span class="step-number">2</span>
+          <p>Import and use in your component</p>
+          <code>import { ReactToast } from '@cross-toast/react'</code>
+        </div>
+        <div class="step">
+          <span class="step-number">3</span>
+          <p>Customize and show your toast!</p>
+          <code>&lt;ReactToast message="Hello World!" /&gt;</code>
+        </div>
       </div>
-      <button onclick="window.showVueToast()">Show Vue Toast</button>
+    </div>
+    
+    <div class="demo-tabs">
+      <div class="tab-buttons">
+        <button class="tab-button active" onclick="window.switchTab('react')">React</button>
+        <button class="tab-button" onclick="window.switchTab('vue')">Vue</button>
+      </div>
+    </div>
+
+    <div id="react-section" class="demo-section active">
+      <h2>React Toast</h2>
+      <div class="theme-buttons">
+        <button onclick="window.setTheme('react', 'light')">Light Theme</button>
+        <button onclick="window.setTheme('react', 'dark')">Dark Theme</button>
+      </div>
+      <div class="demo-grid">
+        <div class="controls">
+          <button onclick="window.showPositionedToast('react', 'top-left')">Top Left</button>
+          <button onclick="window.showPositionedToast('react', 'top-right')">Top Right</button>
+          <button onclick="window.showPositionedToast('react', 'bottom-left')">Bottom Left</button>
+          <button onclick="window.showPositionedToast('react', 'bottom-right')">Bottom Right</button>
+        </div>
+        <pre class="code-block">import { ReactToast } from '@cross-toast/react';
+
+function App() {
+  return (
+    <ReactToast
+      message="Hello from React!"
+      position="top-right"
+      type="success"
+      theme="light"
+    />
+  );
+}</pre>
+      </div>
+    </div>
+
+    <div id="vue-section" class="demo-section">
+      <h2>Vue Toast</h2>
+      <div class="theme-buttons">
+        <button onclick="window.setTheme('vue', 'light')">Light Theme</button>
+        <button onclick="window.setTheme('vue', 'dark')">Dark Theme</button>
+      </div>
+      <div class="demo-grid">
+        <div class="controls">
+          <button onclick="window.showPositionedToast('vue', 'top-left')">Top Left</button>
+          <button onclick="window.showPositionedToast('vue', 'top-right')">Top Right</button>
+          <button onclick="window.showPositionedToast('vue', 'bottom-left')">Bottom Left</button>
+          <button onclick="window.showPositionedToast('vue', 'bottom-right')">Bottom Right</button>
+        </div>
+        <pre class="code-block">import { VueToast } from '@cross-toast/vue';
+
+export default {
+  components: { VueToast },
+  template: '
+    <VueToast
+      message="Hello from Vue!"
+      position="top-right"
+      type="success"
+      theme="light"
+    />
+  '
+};</pre>
+      </div>
     </div>
   </div>
 `;
@@ -113,58 +334,106 @@ reactRoot.id = 'react-root';
 document.body.appendChild(reactRoot);
 const reactRootInstance = createRoot(reactRoot);
 
-function showReactToast() {
-  const position = (document.getElementById('react-position') as HTMLSelectElement).value as ToastPosition;
-  const type = (document.getElementById('react-type') as HTMLSelectElement).value as ToastType;
-  const theme = (document.getElementById('react-theme') as HTMLSelectElement).value as 'light' | 'dark' | 'auto';
 
+
+// State management for themes
+const themes: Record<'react' | 'vue', 'light' | 'dark'> = {
+  react: 'light',
+  vue: 'light'
+};
+
+// Quick toast function for the Toast Me button
+function showQuickToast() {
   reactRootInstance.render(
     React.createElement(ReactToast, {
-      message: `This is a ${type} toast message!`,
-      position,
-      type,
-      theme,
+      message: 'Thanks for trying Cross Toast! 🎉',
+      position: 'bottom-right',
+      type: 'success',
+      theme: 'light',
       onHide: () => reactRootInstance.render(null),
     })
   );
 }
 
-// Setup Vue toast demo
-function showVueToast() {
-  const position = (document.getElementById('vue-position') as HTMLSelectElement).value as ToastPosition;
-  const type = (document.getElementById('vue-type') as HTMLSelectElement).value as ToastType;
-  const theme = (document.getElementById('vue-theme') as HTMLSelectElement).value as 'light' | 'dark' | 'auto';
-
-  const mountEl = document.createElement('div');
-  document.body.appendChild(mountEl);
-
-  const app = createApp({
-    render() {
-      return h(VueToast, {
-        message: `This is a ${type} toast message!`,
-        position,
-        type,
-        theme,
-        duration: 3000,
-        onHide: () => {
-          app.unmount();
-          mountEl.remove();
-        }
-      });
+// Switch between framework tabs
+function switchTab(framework: 'react' | 'vue') {
+  // Update tab buttons
+  document.querySelectorAll('.tab-button').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn instanceof HTMLElement && btn.textContent?.toLowerCase().includes(framework)) {
+      btn.classList.add('active');
     }
   });
 
-  app.mount(mountEl);
+  // Update sections
+  document.querySelectorAll('.demo-section').forEach(section => {
+    section.classList.remove('active');
+    if (section.id === `${framework}-section`) {
+      section.classList.add('active');
+    }
+  });
+}
+
+// Set theme for a framework
+function setTheme(framework: 'react' | 'vue', theme: 'light' | 'dark') {
+  themes[framework] = theme;
+
+  // Update theme buttons
+  const section = document.getElementById(`${framework}-section`);
+  section?.querySelectorAll('.theme-buttons button').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn instanceof HTMLElement && btn.textContent?.toLowerCase().includes(theme)) {
+      btn.classList.add('active');
+    }
+  });
+}
+
+// Show positioned toast for each framework
+function showPositionedToast(framework: 'react' | 'vue', position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right') {
+  const message = `${framework.charAt(0).toUpperCase() + framework.slice(1)} toast in ${position} position! 🎯`;
+
+  if (framework === 'react') {
+    reactRootInstance.render(
+      React.createElement(ReactToast, {
+        message,
+        position,
+        type: 'success',
+        theme: themes.react,
+        onHide: () => reactRootInstance.render(null),
+      })
+    );
+  } else if (framework === 'vue') {
+    const mountEl = document.createElement('div');
+    document.body.appendChild(mountEl);
+
+    const app = createApp({
+      render: () => h(VueToast, {
+        message,
+        position,
+        type: 'success',
+        theme: themes.vue,
+        onHide: () => app.unmount()
+      })
+    });
+
+    app.mount(mountEl);
+  }
 }
 
 // Expose functions to window
-window.showReactToast = showReactToast;
-window.showVueToast = showVueToast;
+Object.assign(window, {
+  showQuickToast,
+  switchTab,
+  setTheme,
+  showPositionedToast
+});
 
 // TypeScript declarations
 declare global {
   interface Window {
-    showReactToast: typeof showReactToast;
-    showVueToast: typeof showVueToast;
+    showQuickToast: typeof showQuickToast;
+    switchTab: typeof switchTab;
+    setTheme: typeof setTheme;
+    showPositionedToast: typeof showPositionedToast;
   }
 }
