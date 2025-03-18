@@ -57,7 +57,7 @@ export default defineComponent({
         setTimeout(() => {
           show.value = false;
           onAfterLeave();
-        }, 300); // Match CSS transition duration
+        }, 350); // Match CSS transition duration for exit animation
       }, props.duration);
     });
 
@@ -136,6 +136,7 @@ export default defineComponent({
 .bottom-right { bottom: 20px; right: 20px; }
 .bottom-left { bottom: 20px; left: 20px; }
 
+/* Toast content base styles */
 .toast-content {
   background-color: var(--toast-bg);
   color: var(--toast-text);
@@ -150,85 +151,65 @@ export default defineComponent({
   border-bottom: 1px solid;
   font-size: 12px;
   opacity: 0;
-  transform: translateX(100%);
   will-change: transform, opacity;
-  transition: transform 300ms cubic-bezier(0.2, 0, 0, 1),
-              opacity 300ms cubic-bezier(0.2, 0, 0, 1);
-}
-
-.toast-container.visible .toast-content {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.toast-content.exit {
-  opacity: 0;
-  transform: translateX(100%);
+  /* Default transition for all toasts - smooth buttery curve */
+  transition: transform 450ms cubic-bezier(0.25, 0.1, 0.25, 1.0),
+              opacity 250ms ease-in-out;
 }
 
 /* Types */
 .success .toast-content { border-color: var(--toast-success); }
 .error .toast-content { border-color: var(--toast-error); }
-.toast-content {
-  background-color: var(--toast-bg);
-  color: var(--toast-text);
-  padding: 12px 24px;
-  border-radius: 25px;
-  box-shadow: 0 4px 6px var(--toast-shadow);
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-left: 1px solid;
-  border-bottom: 1px solid;
-  font-size: 12px;
-  opacity: 0;
-  transform: translateX(100%);
-  will-change: transform, opacity;
-  transition: transform 300ms cubic-bezier(0.2, 0, 0, 1),
-              opacity 300ms cubic-bezier(0.2, 0, 0, 1);
+
+/* Initial positions for entry animations */
+.top-right .toast-content {
+  transform: translateX(120%);
 }
 
-/* Visible state */
+.bottom-right .toast-content {
+  transform: translateX(120%);
+}
+
+.top-left .toast-content {
+  transform: translateX(-120%);
+}
+
+.bottom-left .toast-content {
+  transform: translateX(-120%);
+}
+
+/* Active state */
 .toast-container.visible .toast-content {
   opacity: 1;
   transform: translateX(0);
 }
 
-/* Exit state */
-.toast-content.exit {
+/* Exit animations */
+.top-right .toast-content.exit {
   opacity: 0;
-  transform: translateX(100%);
+  transform: translateY(-100%);
+  transition: transform 350ms cubic-bezier(0.25, 0.1, 0.25, 1.0),
+              opacity 250ms ease-in-out;
 }
 
-/* Left positions */
-.top-left .toast-content,
-.bottom-left .toast-content {
-  transform: translateX(-100%);
-}
-
-.top-right .toast-content,
-.bottom-right .toast-content {
-  transform: translateX(100%);
-}
-
-.top-left.visible .toast-content,
-.bottom-left.visible .toast-content {
-  transform: translateX(0);
-}
-
-.top-right.visible .toast-content,
-.bottom-right.visible .toast-content {
-  transform: translateX(0);
-}
-
-.top-left .toast-content.exit,
-.bottom-left .toast-content.exit {
-  transform: translateX(-100%);
-}
-
-.top-right .toast-content.exit,
 .bottom-right .toast-content.exit {
-  transform: translateX(100%);
+  opacity: 0;
+  transform: translateY(100%);
+  transition: transform 350ms cubic-bezier(0.25, 0.1, 0.25, 1.0),
+              opacity 250ms ease-in-out;
+}
+
+.top-left .toast-content.exit {
+  opacity: 0;
+  transform: translateY(-100%);
+  transition: transform 350ms cubic-bezier(0.25, 0.1, 0.25, 1.0),
+              opacity 250ms ease-in-out;
+}
+
+.bottom-left .toast-content.exit {
+  opacity: 0;
+  transform: translateY(100%);
+  transition: transform 350ms cubic-bezier(0.25, 0.1, 0.25, 1.0),
+              opacity 250ms ease-in-out;
 }
 </style>

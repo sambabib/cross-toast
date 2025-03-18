@@ -7,16 +7,28 @@ import VueToast from '../vue/Toast.vue';
 // Add demo styles
 const style = document.createElement('style');
 style.textContent = `
+  * {
+    box-sizing: border-box;
+  }
+
   body {
     font-family: "Host Grotesk", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     margin: 0;
     padding: 0;
     background: #f8f9f9;
+    -webkit-font-smoothing: antialiased;
   }
   .container {
+    width: 100%;
     max-width: 800px;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .container {
+      padding: 2rem;
+    }
   }
   .toast-header {
     display: flex;
@@ -27,16 +39,20 @@ style.textContent = `
   }
   .toast-header h1 { 
     color: #333; 
-    font-size: 2.5rem;
+    font-size: clamp(2rem, 5vw, 2.5rem);
     letter-spacing: -1px;
-    line-height: 0 !important;
+    line-height: 1.2;
     font-weight: bold;
+    margin: 0 0 1rem;
   }
   .toast-header p { 
     color: #666; 
-    font-size: 1.2rem;
+    font-size: clamp(1rem, 3vw, 1.2rem);
     letter-spacing: -0.5px;
-    line-height: 0;
+    line-height: 1.4;
+    margin: 0;
+    max-width: 600px;
+    padding: 0 1rem;
     font-weight: 600;
   }
   .doc-section {
@@ -114,7 +130,7 @@ style.textContent = `
     border: 1px solid #eee;
     border-radius: 10px;
     color: #333;
-    padding: 16px 32px;
+    padding: 12px 48px;
     text-decoration: none;
     font-size: 14px;
     font-weight: 600;
@@ -156,8 +172,6 @@ style.textContent = `
   .demo-section {
     margin-bottom: 2rem;
     padding: 2rem;
-    border-radius: 10px;
-    background: #fdfefe;
     opacity: 0;
     visibility: hidden;
     height: 0;
@@ -177,23 +191,88 @@ style.textContent = `
   }
   button {
     border: none;
-    padding: 16px 32px;
+    padding: 12px 48px;
     border-radius: 10px;
     cursor: pointer;
     font-size: 14px;
     font-weight: 600;
     letter-spacing: -0.5px;
   }
-  .demo-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    align-items: start;
+  .demo-section {
+    margin-bottom: 2rem;
   }
-  .controls {
+
+  .demo-section h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    color: #49311B;
+  }
+
+  .example-container {
+    background: #49311B;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .example-code {
+    font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, monospace;
+    color: #E6D5C9;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .example-code .highlight {
+    color: #F4C3A3;
+  }
+
+  .position-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .position-button {
+    background: #FFFFFF;
+    border: 1px solid #E6E6E6;
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-size: 0.875rem;
+    color: #49311B;
+    transition: all 0.2s ease;
+  }
+
+  .position-button:hover {
+    background: #F9F5F2;
+  }
+
+  .position-button.active {
+    background: #49311B;
+    color: #FFFFFF;
+    border-color: #49311B;
+  }
+
+  @media (max-width: 768px) {
+    .position-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .example-container {
+      padding: 1rem;
+    }
+
+    .example-code {
+      font-size: 0.8rem;
+    }
+
+    .position-button {
+      padding: 0.5rem;
+      font-size: 0.75rem;
+    }
   }
   .controls button {
     background: #fdfefe;
@@ -237,7 +316,7 @@ container.innerHTML = `
 
     <div class="doc-section">
       <button class="doc-toast" onclick="window.showQuickToast()">Try Cross Toast</button>
-      <button class="doc-github" onclick="window.location.href='https://github.com/sambabib/cross-toast">Github</button>
+      <button class="doc-github" onclick="window.location.href='https://github.com/sambabib/cross-toast" target="_blank">Github</button>
     </div>
 
     <div class="predemo-tabs">
@@ -269,59 +348,38 @@ container.innerHTML = `
     </div>
 
     <div id="react-section" class="demo-section active">
-      <h2>React Toast</h2>
-      <div class="theme-buttons">
-        <button onclick="window.setTheme('react', 'light')">Light Theme</button>
-        <button onclick="window.setTheme('react', 'dark')">Dark Theme</button>
+      <h2>Change Position</h2>
+      <div class="example-container">
+        <pre class="example-code">&lt;Toaster
+          position=<span class="highlight">"bottom-right"</span>
+          reverseOrder=<span class="highlight">false</span>
+        /&gt;</pre>
       </div>
-      <div class="demo-grid">
-        <div class="controls">
-          <button onclick="window.showPositionedToast('react', 'top-left')">Top Left</button>
-          <button onclick="window.showPositionedToast('react', 'top-right')">Top Right</button>
-          <button onclick="window.showPositionedToast('react', 'bottom-left')">Bottom Left</button>
-          <button onclick="window.showPositionedToast('react', 'bottom-right')">Bottom Right</button>
-        </div>
-        <pre class="code-block">import { ReactToast } from '@cross-toast/react';
-
-function App() {
-  return (
-    <ReactToast
-      message="Hello from React!"
-      position="top-right"
-      type="success"
-      theme="light"
-    />
-  );
-}</pre>
+      <div class="position-grid">
+        <button class="position-button" data-position="top-left" onclick="window.showPositionedToast('react', 'top-left')">top-left</button>
+        <button class="position-button" data-position="top-center" onclick="window.showPositionedToast('react', 'top-center')">top-center</button>
+        <button class="position-button" data-position="top-right" onclick="window.showPositionedToast('react', 'top-right')">top-right</button>
+        <button class="position-button" data-position="bottom-left" onclick="window.showPositionedToast('react', 'bottom-left')">bottom-left</button>
+        <button class="position-button" data-position="bottom-center" onclick="window.showPositionedToast('react', 'bottom-center')">bottom-center</button>
+        <button class="position-button active" data-position="bottom-right" onclick="window.showPositionedToast('react', 'bottom-right')">bottom-right</button>
       </div>
     </div>
 
     <div id="vue-section" class="demo-section">
-      <h2>Vue Toast</h2>
-      <div class="theme-buttons">
-        <button onclick="window.setTheme('vue', 'light')">Light Theme</button>
-        <button onclick="window.setTheme('vue', 'dark')">Dark Theme</button>
+      <h2>Change Position</h2>
+      <div class="example-container">
+        <pre class="example-code">&lt;Toaster
+          position=<span class="highlight">"bottom-right"</span>
+          reverseOrder=<span class="highlight">false</span>
+        /&gt;</pre>
       </div>
-      <div class="demo-grid">
-        <div class="controls">
-          <button onclick="window.showPositionedToast('vue', 'top-left')">Top Left</button>
-          <button onclick="window.showPositionedToast('vue', 'top-right')">Top Right</button>
-          <button onclick="window.showPositionedToast('vue', 'bottom-left')">Bottom Left</button>
-          <button onclick="window.showPositionedToast('vue', 'bottom-right')">Bottom Right</button>
-        </div>
-        <pre class="code-block">import { VueToast } from '@cross-toast/vue';
-
-export default {
-  components: { VueToast },
-  template: '
-    <VueToast
-      message="Hello from Vue!"
-      position="top-right"
-      type="success"
-      theme="light"
-    />
-  '
-};</pre>
+      <div class="position-grid">
+        <button class="position-button" data-position="top-left" onclick="window.showPositionedToast('vue', 'top-left')">top-left</button>
+        <button class="position-button" data-position="top-center" onclick="window.showPositionedToast('vue', 'top-center')">top-center</button>
+        <button class="position-button" data-position="top-right" onclick="window.showPositionedToast('vue', 'top-right')">top-right</button>
+        <button class="position-button" data-position="bottom-left" onclick="window.showPositionedToast('vue', 'bottom-left')">bottom-left</button>
+        <button class="position-button" data-position="bottom-center" onclick="window.showPositionedToast('vue', 'bottom-center')">bottom-center</button>
+        <button class="position-button active" data-position="bottom-right" onclick="window.showPositionedToast('vue', 'bottom-right')">bottom-right</button>
       </div>
     </div>
   </div>
@@ -389,7 +447,29 @@ function setTheme(framework: 'react' | 'vue', theme: 'light' | 'dark') {
 }
 
 // Show positioned toast for each framework
-function showPositionedToast(framework: 'react' | 'vue', position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right') {
+function showPositionedToast(framework: 'react' | 'vue', position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'): void {
+  // Update active button state
+  const section = document.getElementById(`${framework}-section`);
+  if (section) {
+    // Remove active class from all buttons
+    section.querySelectorAll('.position-button').forEach(btn => {
+      btn.classList.remove('active');
+    });
+
+    // Add active class to clicked button
+    const activeButton = section.querySelector(`[data-position="${position}"]`);
+    if (activeButton) {
+      activeButton.classList.add('active');
+    }
+
+    // Update example code
+    const exampleCode = section.querySelector('.example-code');
+    if (exampleCode) {
+      exampleCode.innerHTML = `&lt;Toaster\n  position=<span class="highlight">"${position}"</span>\n  reverseOrder=<span class="highlight">false</span>\n/&gt;`;
+    }
+  }
+
+  // Show the toast notification
   const message = `${framework.charAt(0).toUpperCase() + framework.slice(1)} toast in ${position} position! 🎯`;
 
   if (framework === 'react') {
