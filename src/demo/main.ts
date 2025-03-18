@@ -209,7 +209,7 @@ style.textContent = `
   }
 
   .example-container {
-    background: #49311B;
+    background: #333;
     border-radius: 12px;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
@@ -249,9 +249,9 @@ style.textContent = `
   }
 
   .position-button.active {
-    background: #49311B;
+    background: #333;
     color: #FFFFFF;
-    border-color: #49311B;
+    border-color: #333;
   }
 
   @media (max-width: 768px) {
@@ -357,10 +357,8 @@ container.innerHTML = `
       </div>
       <div class="position-grid">
         <button class="position-button" data-position="top-left" onclick="window.showPositionedToast('react', 'top-left')">top-left</button>
-        <button class="position-button" data-position="top-center" onclick="window.showPositionedToast('react', 'top-center')">top-center</button>
         <button class="position-button" data-position="top-right" onclick="window.showPositionedToast('react', 'top-right')">top-right</button>
         <button class="position-button" data-position="bottom-left" onclick="window.showPositionedToast('react', 'bottom-left')">bottom-left</button>
-        <button class="position-button" data-position="bottom-center" onclick="window.showPositionedToast('react', 'bottom-center')">bottom-center</button>
         <button class="position-button active" data-position="bottom-right" onclick="window.showPositionedToast('react', 'bottom-right')">bottom-right</button>
       </div>
     </div>
@@ -375,10 +373,8 @@ container.innerHTML = `
       </div>
       <div class="position-grid">
         <button class="position-button" data-position="top-left" onclick="window.showPositionedToast('vue', 'top-left')">top-left</button>
-        <button class="position-button" data-position="top-center" onclick="window.showPositionedToast('vue', 'top-center')">top-center</button>
         <button class="position-button" data-position="top-right" onclick="window.showPositionedToast('vue', 'top-right')">top-right</button>
         <button class="position-button" data-position="bottom-left" onclick="window.showPositionedToast('vue', 'bottom-left')">bottom-left</button>
-        <button class="position-button" data-position="bottom-center" onclick="window.showPositionedToast('vue', 'bottom-center')">bottom-center</button>
         <button class="position-button active" data-position="bottom-right" onclick="window.showPositionedToast('vue', 'bottom-right')">bottom-right</button>
       </div>
     </div>
@@ -423,13 +419,55 @@ function switchTab(framework: 'react' | 'vue') {
     }
   });
 
-  // Update sections
+  // Remove all demo sections from DOM
   document.querySelectorAll('.demo-section').forEach(section => {
-    section.classList.remove('active');
-    if (section.id === `${framework}-section`) {
-      section.classList.add('active');
-    }
+    section.remove();
   });
+
+  // Add back only the active section
+  const activeSection = document.createElement('div');
+  activeSection.id = `${framework}-section`;
+  activeSection.className = 'demo-section active';
+
+  if (framework === 'react') {
+    activeSection.innerHTML = `
+      <h2>Change Position</h2>
+      <div class="example-container">
+        <pre class="example-code">&lt;Toaster
+          position=<span class="highlight">"bottom-right"</span>
+          reverseOrder=<span class="highlight">false</span>
+        /&gt;</pre>
+      </div>
+      <div class="position-grid">
+        <button class="position-button" data-position="top-left" onclick="window.showPositionedToast('react', 'top-left')">top-left</button>
+        <button class="position-button" data-position="top-right" onclick="window.showPositionedToast('react', 'top-right')">top-right</button>
+        <button class="position-button" data-position="bottom-left" onclick="window.showPositionedToast('react', 'bottom-left')">bottom-left</button>
+        <button class="position-button active" data-position="bottom-right" onclick="window.showPositionedToast('react', 'bottom-right')">bottom-right</button>
+      </div>
+    `;
+  } else {
+    activeSection.innerHTML = `
+      <h2>Change Position</h2>
+      <div class="example-container">
+        <pre class="example-code">&lt;Toaster
+          position=<span class="highlight">"bottom-right"</span>
+          reverseOrder=<span class="highlight">false</span>
+        /&gt;</pre>
+      </div>
+      <div class="position-grid">
+        <button class="position-button" data-position="top-left" onclick="window.showPositionedToast('vue', 'top-left')">top-left</button>
+        <button class="position-button" data-position="top-right" onclick="window.showPositionedToast('vue', 'top-right')">top-right</button>
+        <button class="position-button" data-position="bottom-left" onclick="window.showPositionedToast('vue', 'bottom-left')">bottom-left</button>
+        <button class="position-button active" data-position="bottom-right" onclick="window.showPositionedToast('vue', 'bottom-right')">bottom-right</button>
+      </div>
+    `;
+  }
+
+  // Insert the active section after the demo-tabs div
+  const demoTabs = document.querySelector('.demo-tabs');
+  if (demoTabs) {
+    demoTabs.after(activeSection);
+  }
 }
 
 // Set theme for a framework
