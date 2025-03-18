@@ -52,7 +52,7 @@ export default defineComponent({
       timer = setTimeout(() => {
         // Start exit animation
         exiting.value = true;
-        
+
         // After animation completes, hide the toast
         setTimeout(() => {
           show.value = false;
@@ -83,13 +83,15 @@ export default defineComponent({
   --toast-shadow-light: rgba(0, 0, 0, 0.1);
   --toast-success-light: #4CAF50;
   --toast-error-light: #f44336;
-  
+  --toast-info-light: #2196F3;
+
   /* Dark theme */
   --toast-bg-dark: #333;
   --toast-text-dark: #f0f0f0;
   --toast-shadow-dark: rgba(0, 0, 0, 0.3);
   --toast-success-dark: #5CDF60;
   --toast-error-dark: #ff6b6b;
+  --toast-info-dark: #64B5F6;
 }
 
 .toast-container {
@@ -101,6 +103,7 @@ export default defineComponent({
   --toast-shadow: var(--toast-shadow-light);
   --toast-success: var(--toast-success-light);
   --toast-error: var(--toast-error-light);
+  --toast-info: var(--toast-info-light);
 }
 
 /* Theme classes */
@@ -110,6 +113,7 @@ export default defineComponent({
   --toast-shadow: var(--toast-shadow-dark);
   --toast-success: var(--toast-success-dark);
   --toast-error: var(--toast-error-dark);
+  --toast-info: var(--toast-info-dark);
 }
 
 .auto {
@@ -118,6 +122,7 @@ export default defineComponent({
   --toast-shadow: var(--toast-shadow-light);
   --toast-success: var(--toast-success-light);
   --toast-error: var(--toast-error-light);
+  --toast-info: var(--toast-info-light);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -127,39 +132,65 @@ export default defineComponent({
     --toast-shadow: var(--toast-shadow-dark);
     --toast-success: var(--toast-success-dark);
     --toast-error: var(--toast-error-dark);
+    --toast-info: var(--toast-info-dark);
   }
 }
 
 /* Positions */
-.top-right { top: 20px; right: 20px; }
-.top-left { top: 20px; left: 20px; }
-.bottom-right { bottom: 20px; right: 20px; }
-.bottom-left { bottom: 20px; left: 20px; }
+.top-right {
+  top: 20px;
+  right: 20px;
+}
+
+.top-left {
+  top: 20px;
+  left: 20px;
+}
+
+.bottom-right {
+  bottom: 20px;
+  right: 20px;
+}
+
+.bottom-left {
+  bottom: 20px;
+  left: 20px;
+}
 
 /* Toast content base styles */
 .toast-content {
   background-color: var(--toast-bg);
   color: var(--toast-text);
   padding: 12px 24px;
-  border-radius: 25px;
-  box-shadow: 0 4px 6px var(--toast-shadow);
+  border-radius: 20px;
+  box-shadow: 0 1px 2px var(--toast-shadow);
   margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-left: 1px solid;
   border-bottom: 1px solid;
+  border-right: 1px solid;
   font-size: 12px;
   opacity: 0;
   will-change: transform, opacity;
   /* Default transition for all toasts - smooth buttery curve */
   transition: transform 450ms cubic-bezier(0.25, 0.1, 0.25, 1.0),
-              opacity 250ms ease-in-out;
+    opacity 250ms ease-in-out;
 }
 
 /* Types */
-.success .toast-content { border-color: var(--toast-success); }
-.error .toast-content { border-color: var(--toast-error); }
+.success .toast-content {
+  border-color: var(--toast-success);
+}
+
+.error .toast-content {
+  border-color: var(--toast-error);
+}
+
+.info .toast-content {
+  border-color: var(--toast-info);
+}
 
 /* Initial positions for entry animations */
 .top-right .toast-content {
@@ -189,27 +220,27 @@ export default defineComponent({
   opacity: 0;
   transform: translateY(-100%);
   transition: transform 350ms cubic-bezier(0.25, 0.1, 0.25, 1.0),
-              opacity 250ms ease-in-out;
+    opacity 250ms ease-in-out;
 }
 
 .bottom-right .toast-content.exit {
   opacity: 0;
   transform: translateY(100%);
   transition: transform 350ms cubic-bezier(0.25, 0.1, 0.25, 1.0),
-              opacity 250ms ease-in-out;
+    opacity 250ms ease-in-out;
 }
 
 .top-left .toast-content.exit {
   opacity: 0;
   transform: translateY(-100%);
   transition: transform 350ms cubic-bezier(0.25, 0.1, 0.25, 1.0),
-              opacity 250ms ease-in-out;
+    opacity 250ms ease-in-out;
 }
 
 .bottom-left .toast-content.exit {
   opacity: 0;
   transform: translateY(100%);
   transition: transform 350ms cubic-bezier(0.25, 0.1, 0.25, 1.0),
-              opacity 250ms ease-in-out;
+    opacity 250ms ease-in-out;
 }
 </style>
