@@ -106,25 +106,6 @@ export default {
 }
 </script>
 
-### Vanilla JavaScript
-
-```js
-import { createToast } from 'cross-toast';
-
-// Basic usage
-createToast('Hello World!');
-
-// With options
-createToast({
-  message: 'Operation successful!',
-  type: 'success',
-  position: 'top-right',
-  theme: 'auto',
-  duration: 3000
-});
-
-```
-
 ## How It Works
 
 Cross-Toast renders toast notifications that automatically position themselves based on the `position` prop. Each toast:
