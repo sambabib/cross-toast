@@ -10,26 +10,35 @@ export const ReactToast: React.FC<ToastProps & { theme?: 'light' | 'dark' | 'aut
   theme = 'auto',
   onHide,
 }) => {
-  const [visible, setVisible] = useState(true);
+  // Initialize as not visible to allow for entry animation
+  const [isVisible, setIsVisible] = useState(false);
   const [exiting, setExiting] = useState(false);
+  const [mounted, setMounted] = useState(true);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
+    // Trigger the entry animation after a brief delay to ensure the initial state is set
+    const entryTimer = setTimeout(() => {
+      setIsVisible(true);
+    }, 10);
+
+    // Set up exit timer
     timerRef.current = setTimeout(() => {
       setExiting(true);
       // After the exit animation completes, we fully remove the toast
       setTimeout(() => {
-        setVisible(false);
+        setMounted(false);
         onHide?.();
-      }, 500); // Match the duration of the fadeOut animation
+      }, 350); // Match the duration of the exit animation
     }, duration);
 
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
+      clearTimeout(entryTimer);
     };
   }, [duration, onHide]);
 
-  if (!visible) return null;
+  if (!mounted) return null;
 
   // Convert kebab-case position to camelCase for CSS modules
   const positionClass = position.replace(/-([a-z])/g, g => g[1].toUpperCase());
@@ -39,7 +48,7 @@ export const ReactToast: React.FC<ToastProps & { theme?: 'light' | 'dark' | 'aut
 
   return (
     <div
-      className={`${styles.toastContainer} ${styles[positionClass]} ${visible ? styles.visible : ''} ${themeClass}`}
+      className={`${styles.toastContainer} ${styles[positionClass]} ${isVisible ? styles.visible : ''} ${themeClass}`}
     >
       <div className={`${styles.toastContent} ${styles[type]} ${exiting ? styles.exit : ''}`}>
         {message}

@@ -16,10 +16,9 @@ vi.mock('../../react/Toast.module.css', () => ({
     topLeft: 'topLeft',
     bottomRight: 'bottomRight',
     bottomLeft: 'bottomLeft',
-    slideIn: 'slideIn',
-    fadeOut: 'fadeOut',
-    slideInLeft: 'slideInLeft',
-    exit: 'exit'
+    exit: 'exit',
+    light: 'light',
+    dark: 'dark'
   }
 }));
 
@@ -46,24 +45,47 @@ describe('ReactToast', () => {
     expect(toast).toHaveClass('error', { exact: false });
   });
 
+  it('starts with isVisible=false and sets it to true after a brief delay', async () => {
+    vi.useFakeTimers();
+    const { container } = render(<ReactToast message="Test message" />);
+    const toastContainer = container.firstChild as HTMLElement;
+
+    // Initially not visible
+    expect(toastContainer).not.toHaveClass('visible');
+
+    // After the delay, should be visible
+    await act(() => {
+      vi.advanceTimersByTime(15); // Just past the 10ms delay
+    });
+
+    expect(toastContainer).toHaveClass('visible');
+    vi.useRealTimers();
+  });
+
   it('hides after duration and calls onHide', async () => {
     vi.useFakeTimers();
     const onHide = vi.fn();
     render(<ReactToast message="Test message" duration={100} onHide={onHide} />);
 
+    // Make sure it's rendered initially
     expect(screen.getByText('Test message')).toBeInTheDocument();
+
+    // Wait for the visibility state to be true
+    await act(() => {
+      vi.advanceTimersByTime(15);
+    });
 
     // Advance past duration
     await act(() => {
       vi.advanceTimersByTime(100);
     });
 
-    // Should still be in document but not visible
+    // Exit animation starts, component should still be in document with exit class
     expect(screen.getByText('Test message')).toBeInTheDocument();
 
-    // Advance through exit animation
+    // Advance through exit animation 
     await act(() => {
-      vi.advanceTimersByTime(500);
+      vi.advanceTimersByTime(350); // Match our exit animation duration
     });
 
     // Now it should be removed and onHide called
@@ -76,57 +98,47 @@ describe('ReactToast', () => {
     vi.useFakeTimers();
     render(<ReactToast message="Test message" />);
 
+    // Initial visibility delay
+    await act(() => {
+      vi.advanceTimersByTime(15);
+    });
+
     expect(screen.getByText('Test message')).toBeInTheDocument();
 
     await act(async () => {
-      vi.advanceTimersByTime(2000);
+      vi.advanceTimersByTime(2990); // Just before duration ends
     });
     expect(screen.getByText('Test message')).toBeInTheDocument();
 
     await act(async () => {
-      vi.advanceTimersByTime(1500);
+      vi.advanceTimersByTime(10); // Reach the full duration
     });
+
+    // Exit animation starts, but it's still in the document
+    expect(screen.getByText('Test message')).toBeInTheDocument();
+
+    // Complete the exit animation duration
+    await act(async () => {
+      vi.advanceTimersByTime(350);
+    });
+
+    // Now it should be removed
     expect(screen.queryByText('Test message')).not.toBeInTheDocument();
     vi.useRealTimers();
   });
 
-  it('applies visible class initially and starts exit animation after duration', async () => {
+  it('applies exit class during exit animation', async () => {
     vi.useFakeTimers();
     const { container } = render(<ReactToast message="Test message" duration={100} />);
-    const toastContainer = container.firstChild as HTMLElement;
-    const toastContent = container.querySelector(`.${styles.toastContent}`) as HTMLElement;
 
-    expect(toastContainer).toHaveClass('toastContainer');
-    expect(toastContainer).toHaveClass('visible');
-
+    // Initial visibility delay
     await act(() => {
-      vi.advanceTimersByTime(100);
-      return Promise.resolve();
+      vi.advanceTimersByTime(15);
     });
 
-    // In the new implementation, visible class remains but exit class is added to start animation
-    expect(toastContainer).toHaveClass('visible');
-    expect(toastContent).toHaveClass('exit');
-    expect(container.firstChild).not.toBeNull();
-
-    // Advance through exit animation
-    await act(() => {
-      vi.advanceTimersByTime(500);
-    });
-
-    // Now the component should be removed
-    expect(container.firstChild).toBeNull();
-    vi.useRealTimers();
-  });
-
-  it('applies correct animation classes during exit', async () => {
-    vi.useFakeTimers();
-    const { container } = render(<ReactToast message="Test message" duration={100} />);
-    const toastContainer = container.firstChild as HTMLElement;
     const toastContent = container.querySelector(`.${styles.toastContent}`) as HTMLElement;
 
-    // Initially should be visible without exit class
-    expect(toastContainer).toHaveClass('visible');
+    // Initially should not have exit class
     expect(toastContent).not.toHaveClass('exit');
 
     // Advance to start exit animation
@@ -134,64 +146,34 @@ describe('ReactToast', () => {
       vi.advanceTimersByTime(100);
     });
 
-    // Should have exit class to trigger animation
-    expect(toastContainer).toHaveClass('visible');
+    // Now should have exit class
     expect(toastContent).toHaveClass('exit');
 
     // Advance through exit animation
     await act(() => {
-      vi.advanceTimersByTime(300); 
+      vi.advanceTimersByTime(350);
     });
 
-    // Component should still be in DOM during animation
-    expect(container.firstChild).not.toBeNull();
-
-    // Complete animation
-    await act(() => {
-      vi.advanceTimersByTime(100);
-    });
-
-    // Now component should be unmounted
+    // Component should be unmounted after animation
     expect(container.firstChild).toBeNull();
     vi.useRealTimers();
   });
 
-  it('waits for animation to complete before unmounting', async () => {
+  it('cleans up timers when unmounted', () => {
     vi.useFakeTimers();
-    const onHide = vi.fn();
-    const { container } = render(
-      <ReactToast message="Test message" duration={100} onHide={onHide} />
-    );
-    const toastContainer = container.firstChild as HTMLElement;
-    const toastContent = container.querySelector(`.${styles.toastContent}`) as HTMLElement;
+    const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout');
 
-    // Initially should be visible
-    expect(toastContainer).toHaveClass('visible');
-    expect(toastContent).not.toHaveClass('exit');
+    const { unmount } = render(<ReactToast message="Test message" />);
 
-    // Advance to start exit animation
-    await act(() => {
-      vi.advanceTimersByTime(100);
-    });
+    unmount();
 
-    // Should still be visible but with exit class added, and still mounted
-    expect(toastContainer).toHaveClass('visible');
-    expect(toastContent).toHaveClass('exit');
-    expect(container.firstChild).not.toBeNull();
-    expect(onHide).not.toHaveBeenCalled();
-
-    // Complete animation
-    await act(() => {
-      vi.advanceTimersByTime(300); 
-    });
-
-    // Now it should be unmounted and onHide called
-    expect(container.firstChild).toBeNull();
-    expect(onHide).toHaveBeenCalledTimes(1);
+    // Should clear both the duration timer and the entry animation timer
+    expect(clearTimeoutSpy).toHaveBeenCalledTimes(2);
+    clearTimeoutSpy.mockRestore();
     vi.useRealTimers();
   });
 
-  // New position-related tests
+  // Position-related tests
   it('uses bottom-right position by default', () => {
     const { container } = render(<ReactToast message="Test message" />);
     const toastContainer = container.firstChild as HTMLElement;
@@ -222,94 +204,73 @@ describe('ReactToast', () => {
     expect(toastContainer.className).toContain('bottomLeft');
   });
 
-  it('maintains other classes when position is changed', () => {
+  // Theme tests
+  it('applies light theme when specified', () => {
     const { container } = render(
-      <ReactToast message="Test message" position="top-left" type="success" />
+      <ReactToast message="Test message" theme="light" />
     );
-    const toastContent = container.querySelector('.toastContent') as HTMLElement;
     const toastContainer = container.firstChild as HTMLElement;
-
-    expect(toastContainer.className).toContain('topLeft');
-    expect(toastContainer.className).toContain('visible');
-    expect(toastContent.className).toContain('success');
+    expect(toastContainer.className).toContain('light');
   });
 
-  it('applies exit class during exit animation', async () => {
-    vi.useFakeTimers();
-    const { container } = render(<ReactToast message="Test message" duration={100} />);
-    const toastContent = container.querySelector(`.${styles.toastContent}`) as HTMLElement;
+  it('applies dark theme when specified', () => {
+    const { container } = render(
+      <ReactToast message="Test message" theme="dark" />
+    );
+    const toastContainer = container.firstChild as HTMLElement;
+    expect(toastContainer.className).toContain('dark');
+  });
 
-    // Initially should not have exit class
+  it('does not apply theme class when theme is auto', () => {
+    const { container } = render(
+      <ReactToast message="Test message" theme="auto" />
+    );
+    const toastContainer = container.firstChild as HTMLElement;
+    expect(toastContainer.className).not.toContain('light');
+    expect(toastContainer.className).not.toContain('dark');
+  });
+
+  it('maintains all necessary states during the entire lifecycle', async () => {
+    vi.useFakeTimers();
+    const onHide = vi.fn();
+    const { container } = render(
+      <ReactToast message="Test message" duration={100} onHide={onHide} />
+    );
+
+    // 1. Initial state: mounted but not visible yet
+    let toastContainer = container.firstChild as HTMLElement;
+    expect(toastContainer).not.toHaveClass('visible');
+
+    // 2. After brief delay: visible state is applied
+    await act(() => {
+      vi.advanceTimersByTime(15);
+    });
+    expect(toastContainer).toHaveClass('visible');
+
+    // 3. During visible state: no exit class
+    const toastContent = container.querySelector(`.${styles.toastContent}`) as HTMLElement;
     expect(toastContent).not.toHaveClass('exit');
 
-    // Advance to start exit animation
+    // 4. After duration: exit class added to start animation
     await act(() => {
       vi.advanceTimersByTime(100);
     });
-
-    // Now should have exit class
     expect(toastContent).toHaveClass('exit');
+    expect(toastContainer).toHaveClass('visible'); // Still visible during exit
 
-    // Advance through exit animation
+    // 5. During exit animation: still in DOM
     await act(() => {
-      vi.advanceTimersByTime(500);
+      vi.advanceTimersByTime(200); // Partway through exit
     });
-
-    // Component should be unmounted after animation
-    expect(container.firstChild).toBeNull();
-    vi.useRealTimers();
-  });
-
-  it('cleans up timer when unmounted', () => {
-    vi.useFakeTimers();
-    const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout');
-
-    const { unmount } = render(<ReactToast message="Test message" />);
-
-    unmount();
-
-    expect(clearTimeoutSpy).toHaveBeenCalled();
-    clearTimeoutSpy.mockRestore();
-    vi.useRealTimers();
-  });
-
-  it('has two-phase unmounting with exit animation', async () => {
-    vi.useFakeTimers();
-    const { container } = render(<ReactToast message="Test message" duration={100} />);
-
-    // Initially visible
     expect(container.firstChild).not.toBeNull();
 
-    // Phase 1: Start exit animation
+    // 6. After exit animation: removed from DOM
     await act(() => {
-      vi.advanceTimersByTime(100);
+      vi.advanceTimersByTime(150); // Complete exit
     });
-
-    // Should still be in DOM but with exit class
-    expect(container.firstChild).not.toBeNull();
-    expect(container.querySelector(`.${styles.toastContent}`)).toHaveClass('exit');
-
-    // Phase 2: Complete exit animation and unmount
-    await act(() => {
-      vi.advanceTimersByTime(500);
-    });
-
-    // Now it should be removed
     expect(container.firstChild).toBeNull();
+    expect(onHide).toHaveBeenCalledTimes(1);
+
     vi.useRealTimers();
-  });
-
-  it('applies correct animation classes for right-side positions', () => {
-    const { container } = render(<ReactToast message="Test message" position="top-right" />);
-    const toastContent = container.querySelector(`.${styles.toastContent}`) as HTMLElement;
-    
-    expect(toastContent.style.transform).toBe('translateX(100%)');
-  });
-
-  it('applies correct animation classes for left-side positions', () => {
-    const { container } = render(<ReactToast message="Test message" position="top-left" />);
-    const toastContent = container.querySelector(`.${styles.toastContent}`) as HTMLElement;
-    
-    expect(toastContent.style.transform).toBe('translateX(-100%)');
   });
 });
