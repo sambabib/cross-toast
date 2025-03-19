@@ -33,7 +33,92 @@ pnpm add cross-toast
 
 ### React
 
-```jsx
+Cross Toast provides a simple, intuitive API for displaying toast notifications in your React applications.
+
+#### Basic Usage
+
+The simplest way to use Cross Toast is with the toast function API:
+
+```tsx
+import { toast } from 'cross-toast/react';
+
+function App() {
+  const showToast = () => {
+    // Show a success toast with default options
+    toast.success('Operation successful!');
+    
+    // Or show an error toast
+    toast.error('Something went wrong!');
+    
+    // Or an info toast
+    toast.info('This is an informational message');
+  };
+
+  return <button onClick={showToast}>Show Toast</button>;
+}
+```
+
+#### With Custom Options
+
+You can customize the toast by providing additional options:
+
+```tsx
+import { toast } from 'cross-toast/react';
+
+function App() {
+  const showCustomToast = () => {
+    toast.success('Operation successful!', {
+      position: 'top-right',      // 'top-right', 'top-left', 'bottom-right', 'bottom-left'
+      duration: 5000,             // Duration in milliseconds
+      theme: 'dark',              // 'light', 'dark', or 'auto'
+    });
+  };
+
+  return <button onClick={showCustomToast}>Show Custom Toast</button>;
+}
+```
+
+#### Advanced Usage
+
+For more control, you can use the `show` method directly:
+
+```tsx
+import { toast } from 'cross-toast/react';
+import type { ToastProps } from 'cross-toast/react';
+
+function App() {
+  const showAdvancedToast = () => {
+    const id = toast.show({
+      message: 'This is a fully customized toast',
+      type: 'success',             // 'success', 'error', or 'info'
+      position: 'bottom-left',
+      duration: 4000,
+      theme: 'auto',
+      onHide: () => console.log('Toast was hidden')
+    });
+    
+    // You can dismiss the toast programmatically
+    // setTimeout(() => toast.dismiss(id), 2000);
+  };
+  
+  const dismissAllToasts = () => {
+    toast.dismissAll();
+  };
+
+  return (
+    <div>
+      <button onClick={showAdvancedToast}>Show Advanced Toast</button>
+      <button onClick={dismissAllToasts}>Dismiss All Toasts</button>
+    </div>
+  );
+}
+```
+
+#### Using the Component Directly (Alternative)
+
+If you need more control over the rendering process, you can still use the `ReactToast` component directly:
+
+```tsx
 import { ReactToast } from 'cross-toast/react';
 import { createRoot } from 'react-dom/client';
 
@@ -62,7 +147,6 @@ function App() {
 
   return <button onClick={showToast}>Show Toast</button>;
 }
-
 ```
 
 ### Vue

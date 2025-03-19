@@ -5,6 +5,7 @@
   --toast-shadow-light: rgba(0, 0, 0, 0.1);
   --toast-success-light: #4CAF50;
   --toast-error-light: #f44336;
+  --toast-info-light: #2196f3;
 
   /* Dark theme */
   --toast-bg-dark: #333;
@@ -12,6 +13,7 @@
   --toast-shadow-dark: rgba(0, 0, 0, 0.3);
   --toast-success-dark: #5CDF60;
   --toast-error-dark: #ff6b6b;
+  --toast-info-dark: #2196f3;
 }
 
 /* Use light theme by default */
@@ -24,6 +26,7 @@
   --toast-shadow: var(--toast-shadow-light);
   --toast-success: var(--toast-success-light);
   --toast-error: var(--toast-error-light);
+  --toast-info: var(--toast-info-light);
 }
 
 /* Apply dark theme when dark mode is detected */
@@ -34,6 +37,7 @@
     --toast-shadow: var(--toast-shadow-dark);
     --toast-success: var(--toast-success-dark);
     --toast-error: var(--toast-error-dark);
+    --toast-info: var(--toast-info-dark);
   }
 }
 
@@ -143,10 +147,6 @@
 
 .error {
   border-color: var(--toast-error);
-}
-
-.info {
-  border-left: 4px solid #2196f3;
 }
 
 /* Add these to the existing CSS */

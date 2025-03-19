@@ -1,6 +1,6 @@
 <template>
   <div v-if="show" :class="['toast-container', position, type, theme, isVisible ? 'visible' : '']">
-    <div :class="['toast-content', exiting ? 'exit' : '']">{{ message }}</div>
+    <div :class="['toast-content', type, exiting ? 'exit' : '']">{{ message }}</div>
   </div>
 </template>
 
