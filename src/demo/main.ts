@@ -1,8 +1,4 @@
-import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { createApp, h } from 'vue';
-import { ReactToast } from '../react';
-import VueToast from '../vue/Toast.vue';
 import { ToastType } from '../types';
 import { toast as reactToast } from '../react';
 import { toast as vueToast } from '../vue';
@@ -10,15 +6,42 @@ import { toast as vueToast } from '../vue';
 // Add demo styles
 const style = document.createElement('style');
 style.textContent = `
+  :root {
+    --bg-primary: #f8f9f9;
+    --text-primary: #333;
+    --text-secondary: #666;
+    --border-color: #e0e0e0;
+    --highlight-color: #F4C3A3;
+    --code-bg: #333;
+    --code-text: #E6D5C9;
+    --button-hover: #F9F5F2;
+    --transition-duration: 0.3s;
+  }
+
+  :root[data-theme="dark"] {
+    --bg-primary: #1a1a1a;
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0a0;
+    --border-color: #404040;
+    --highlight-color: #F4C3A3;
+    --code-bg: #2d2d2d;
+    --code-text: #E6D5C9;
+    --button-hover: #2d2d2d;
+  }
+
   * {
     box-sizing: border-box;
+    transition: background-color var(--transition-duration) ease,
+                color var(--transition-duration) ease,
+                border-color var(--transition-duration) ease;
   }
 
   body {
     font-family: "Host Grotesk", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     margin: 0;
     padding: 0;
-    background: #f8f9f9;
+    background: var(--bg-primary);
+    color: var(--text-primary);
     -webkit-font-smoothing: antialiased;
   }
   
@@ -42,7 +65,7 @@ style.textContent = `
     gap: 0.5rem;
     font-weight: 700;
     font-size: 1.1rem;
-    color: #333;
+    color: var(--text-primary);
     text-decoration: none;
     transition: opacity 0.3s ease;
   }
@@ -134,7 +157,7 @@ style.textContent = `
   }
   
   .toast-header h1 { 
-    color: #333; 
+    color: var(--text-primary); 
     font-size: clamp(1.8rem, 5vw, 2rem);
     line-height: 1.2;
     font-weight: bold;
@@ -142,7 +165,7 @@ style.textContent = `
   }
   
   .toast-header p { 
-    color: #666; 
+    color: var(--text-secondary); 
     width: 40vw;
     font-size: clamp(1rem, 2vw, 1.2rem);
     line-height: 1.4;
@@ -174,7 +197,7 @@ style.textContent = `
   
   .predemo-tabs h2 {
     font-size: clamp(1rem, 5vw, 1.8rem);
-    color: #333;
+    color: var(--text-primary);
     margin: 0;
     font-weight: bold;
   }
@@ -210,17 +233,17 @@ style.textContent = `
   .step p {
     margin: 0;
     font-size: clamp(.8rem, 2vw, 1.1rem);
-    color: #666;
+    color: var(--text-secondary);
     font-weight: 600;
   }
   
   .step code {
     font-family: monospace;
-    background: #f1f1f1;
+    background: var(--code-bg);
     padding: 0.5rem 1rem;
     border-radius: 6px;
     font-size: 0.7rem;
-    color: #333;
+    color: var(--code-text);
     position: relative;
     cursor: pointer;
     transition: background-color 0.2s ease;
@@ -343,32 +366,34 @@ style.textContent = `
   }
   
   .tab-buttons {
-    background: #efefef;
+    background: var(--button-hover);
     max-width: 400px;
     padding: .25rem .35rem;
     border-radius: 10px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    border: 1px solid var(--border-color);
   }
   
   .tab-button {
     background: none;
     border: none;
     padding: .25rem 4rem;
-    color: #666;
+    color: var(--text-secondary);
     cursor: pointer;
     font-size: 14px;
     font-weight: 600;
     border-radius: 10px;
+    transition: all 0.2s ease;
   }
   
   .tab-button.active {
-    background: #fdfefe;
-    color: #333;
+    background: var(--bg-primary);
+    color: var(--text-primary);
     padding: .4rem 4rem;
     transition: background 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   }
   .demo-section {
     margin-bottom: 2rem;
@@ -409,7 +434,7 @@ style.textContent = `
   }
 
   .example-container {
-    background: #333;
+    background: var(--code-bg);
     border-radius: 12px;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
@@ -417,7 +442,7 @@ style.textContent = `
 
   .example-code {
     font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, monospace;
-    color: #E6D5C9;
+    color: var(--code-text);
     font-size: 0.9rem;
     line-height: 1.5;
     margin: 0;
@@ -426,7 +451,7 @@ style.textContent = `
   }
 
   .example-code:hover {
-    color: #F4C3A3;
+    color: var(--highlight-color);
   }
   
   .example-code::after {
@@ -450,7 +475,7 @@ style.textContent = `
   }
 
   .example-code .highlight {
-    color: #F4C3A3;
+    color: var(--highlight-color);
   }
 
   .position-grid {
@@ -461,23 +486,23 @@ style.textContent = `
   }
 
   .position-button {
-    background: #FFFFFF;
-    border: 1px solid #E6E6E6;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 0.75rem;
     font-size: 0.875rem;
-    color: #49311B;
+    color: var(--text-primary);
     transition: all 0.2s ease;
   }
 
   .position-button:hover {
-    background: #F9F5F2;
+    background: var(--button-hover);
   }
 
   .position-button.active {
-    background: #333;
-    color: #FFFFFF;
-    border-color: #333;
+    background: var(--text-primary);
+    color: var(--bg-primary);
+    border-color: var(--text-primary);
   }
 
   @media (max-width: 768px) {
@@ -690,7 +715,7 @@ style.textContent = `
     background: transparent;
     border-radius: 6px;
     cursor: pointer;
-    color: #333;
+    color: var(--text-primary);
     font-size: 0.875rem;
     font-weight: 600;
   }
@@ -700,20 +725,20 @@ style.textContent = `
     align-items: center;
     justify-content: space-between;
     padding: 8px 12px;
-    background: transparent;
+    background: var(--bg-primary);
     border-radius: 6px;
     cursor: pointer;
-    color: #333;
+    color: var(--text-primary);
     font-size: 0.875rem;
     font-weight: 600;
-    border: 2px solid #e0e0e0;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
+    border: 2px solid var(--border-color);
+    transition: all 0.2s ease;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   .dropdown-selected:hover {
-    background-color: rgba(0, 0, 0, 0.03);
+    background: var(--button-hover);
   }
 
   .dropdown-selected:after {
@@ -722,13 +747,9 @@ style.textContent = `
     height: 0;
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-top: 5px solid #666;
+    border-top: 5px solid var(--text-secondary);
     margin-left: 8px;
     transition: transform 0.2s ease;
-  }
-
-  .dropdown-options.open ~ .dropdown-selected:after {
-    transform: rotate(180deg);
   }
 
   .dropdown-options {
@@ -736,20 +757,14 @@ style.textContent = `
     top: calc(100% + 5px);
     left: 0;
     width: 100%;
-    background: #fff;
+    background: var(--bg-primary);
     border-radius: 6px;
     box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--border-color);
     display: none;
     flex-direction: column;
     z-index: 10;
     overflow: hidden;
-  }
-
-  .dropdown-options.open {
-    display: flex;
-    border: none;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
 
   .dropdown-option {
@@ -759,21 +774,20 @@ style.textContent = `
     align-items: center;
     cursor: pointer;
     font-size: 0.875rem;
+    color: var(--text-secondary);
     transition: all 0.2s ease;
-    color: #666;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   .dropdown-option:hover {
-    background: rgba(0, 0, 0, 0.03);
-    color: #333;
+    background: var(--button-hover);
+    color: var(--text-primary);
   }
 
   .dropdown-option.selected {
-    background-color: rgba(0, 0, 0, 0.05);
-    font-weight: 600;
-    color: #333;
+    background: var(--button-hover);
+    color: var(--text-primary);
   }
   
   /* Remove dividers between options */
@@ -858,17 +872,41 @@ style.textContent = `
   .nav-controls .dropdown-selected {
     font-size: 0.75rem;
     padding: 6px 10px;
-    background: rgba(255, 255, 255, 0.8);
-    border: 1px solid #e0e0e0;
+    background: var(--bg-primary);
+    border: 2px solid var(--border-color);
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
   
   .nav-controls .dropdown-options {
     min-width: 120px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
   }
   
   .nav-controls .dropdown-option {
     font-size: 0.75rem;
     padding: 6px 10px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .nav-controls .dropdown-option:hover {
+    background: var(--button-hover);
+    color: var(--text-primary);
+  }
+
+  .nav-controls .dropdown-option.selected {
+    background: var(--button-hover);
+    color: var(--text-primary);
+  }
+
+  .dropdown-options.open {
+    display: flex;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
 `;
 document.head.appendChild(style);
@@ -1132,6 +1170,9 @@ function toggleTheme(): void {
 
   // Update theme for framework
   themes[framework] = newTheme;
+
+  // Update document theme
+  document.documentElement.setAttribute('data-theme', newTheme);
 
   // Update theme slider
   const themeSlider = document.getElementById('theme-slider');
@@ -1518,6 +1559,9 @@ function tryToastDemo(): void {
 
 // Initialize UI once document is loaded
 document.addEventListener('DOMContentLoaded', function () {
+  // Set initial theme based on current framework
+  document.documentElement.setAttribute('data-theme', themes[currentFramework]);
+
   // Set initial UI state for the current framework
   updateUIForCurrentFramework(currentFramework);
 

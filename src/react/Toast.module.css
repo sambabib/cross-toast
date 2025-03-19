@@ -66,7 +66,7 @@
   background-color: var(--toast-bg);
   color: var(--toast-text);
   padding: 12px 24px;
-  border-radius: 20px;
+  border-radius: 10px;
   box-shadow: 0 1px 2px var(--toast-shadow);
   margin-bottom: 10px;
   display: flex;
