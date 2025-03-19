@@ -1,6 +1,6 @@
 :root {
   /* Light theme (default) */
-  --toast-bg-light: white;
+  --toast-bg-light: rgba(255, 255, 255, 0.9);
   --toast-text-light: #333;
   --toast-shadow-light: rgba(0, 0, 0, 0.1);
   --toast-success-light: #4CAF50;
@@ -8,7 +8,7 @@
   --toast-info-light: #2196f3;
 
   /* Dark theme */
-  --toast-bg-dark: #333;
+  --toast-bg-dark: rgba(51, 51, 51, 0.9);
   --toast-text-dark: #f0f0f0;
   --toast-shadow-dark: rgba(0, 0, 0, 0.3);
   --toast-success-dark: #5CDF60;
@@ -63,18 +63,19 @@
 }
 
 .toastContent {
-  background-color: var(--toast-bg);
+  background: var(--toast-bg);
+  background-image: radial-gradient(1139.98% 138.18% at 0 0, hsla(0, 0%, 100%, .25) 0, hsla(0, 0%, 100%, 0) 100%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   color: var(--toast-text);
   padding: 12px 24px;
   border-radius: 10px;
-  box-shadow: 0 1px 2px var(--toast-shadow);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-left: 1px solid;
-  border-bottom: 1px solid;
-  border-right: 1px solid;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   font-size: 12px;
   opacity: 0;
   will-change: transform, opacity;
@@ -142,11 +143,19 @@
 }
 
 .success {
-  border-color: var(--toast-success);
+  background: var(--toast-bg);
+  background-image:
+    radial-gradient(1139.98% 138.18% at 0 0, hsla(0, 0%, 100%, .25) 0, hsla(0, 0%, 100%, 0) 100%),
+    radial-gradient(circle at top left, rgba(76, 175, 80, 0.15), transparent 50%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .error {
-  border-color: var(--toast-error);
+  background: var(--toast-bg);
+  background-image:
+    radial-gradient(1139.98% 138.18% at 0 0, hsla(0, 0%, 100%, .25) 0, hsla(0, 0%, 100%, 0) 100%),
+    radial-gradient(circle at top left, rgba(244, 67, 54, 0.15), transparent 50%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Add these to the existing CSS */
