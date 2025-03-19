@@ -1,9 +1,11 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { createApp, h } from 'vue';
-import { ReactToast } from '../react/Toast';
+import { ReactToast } from '../react';
 import VueToast from '../vue/Toast.vue';
 import { ToastType } from '../types';
+import { toast as reactToast } from '../react';
+import { toast as vueToast } from '../vue';
 
 // Add demo styles
 const style = document.createElement('style');
@@ -271,9 +273,9 @@ style.textContent = `
   }
  
   .doc-github {
-    border: 1px solid #333;
+    border: 1px solid #f1f1f1;
     border-radius: 10px;
-    padding: 13px 60px;
+    padding: 13px 48px;
     text-decoration: none;
     font-size: 14px;
     font-weight: 600;
@@ -307,6 +309,25 @@ style.textContent = `
     width: 100%;
   }
   
+  /* Try Cross Toast button styling */
+  .try-toast-btn {
+    border: 1px solid #f1f1f1;
+    border-radius: 10px;
+    padding: 13px 28px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    background-color: #333;
+    color: #fff;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .try-toast-btn:hover {
+    background-color: #555;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
   a {
     text-decoration: none;
     color: #333;
@@ -324,7 +345,7 @@ style.textContent = `
   .tab-buttons {
     background: #efefef;
     max-width: 400px;
-    padding: .4rem .35rem;
+    padding: .25rem .35rem;
     border-radius: 10px;
     display: flex;
     flex-direction: row;
@@ -334,7 +355,7 @@ style.textContent = `
   .tab-button {
     background: none;
     border: none;
-    padding: .4rem 4rem;
+    padding: .25rem 4rem;
     color: #666;
     cursor: pointer;
     font-size: 14px;
@@ -345,7 +366,7 @@ style.textContent = `
   .tab-button.active {
     background: #fdfefe;
     color: #333;
-    padding: .8rem 4rem;
+    padding: .4rem 4rem;
     transition: background 0.3s ease;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   }
@@ -513,7 +534,6 @@ style.textContent = `
     gap: 2rem;
     margin-bottom: 2rem;
     padding: 1.5rem;
-    background: #f5f5f5;
     border-radius: 10px;
     justify-content: center;
   }
@@ -569,6 +589,7 @@ style.textContent = `
     color: #666;
     font-size: 0.9rem;
     font-weight: 500;
+    margin-top: 2rem;
   }
 
   .footer span {
@@ -666,6 +687,12 @@ style.textContent = `
   .custom-dropdown {
     position: relative;
     width: 100%;
+    background: transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #333;
+    font-size: 0.875rem;
+    font-weight: 600;
   }
 
   .dropdown-selected {
@@ -673,12 +700,20 @@ style.textContent = `
     align-items: center;
     justify-content: space-between;
     padding: 8px 12px;
-    background: #f0f0f0;
+    background: transparent;
     border-radius: 6px;
     cursor: pointer;
     color: #333;
     font-size: 0.875rem;
     font-weight: 600;
+    border: 2px solid #e0e0e0;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .dropdown-selected:hover {
+    background-color: rgba(0, 0, 0, 0.03);
   }
 
   .dropdown-selected:after {
@@ -689,6 +724,11 @@ style.textContent = `
     border-right: 5px solid transparent;
     border-top: 5px solid #666;
     margin-left: 8px;
+    transition: transform 0.2s ease;
+  }
+
+  .dropdown-options.open ~ .dropdown-selected:after {
+    transform: rotate(180deg);
   }
 
   .dropdown-options {
@@ -699,6 +739,7 @@ style.textContent = `
     background: #fff;
     border-radius: 6px;
     box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    border: 1px solid #e0e0e0;
     display: none;
     flex-direction: column;
     z-index: 10;
@@ -707,44 +748,127 @@ style.textContent = `
 
   .dropdown-options.open {
     display: flex;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
 
   .dropdown-option {
-    padding: 8px 12px;
+    position: relative;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
     cursor: pointer;
     font-size: 0.875rem;
-    transition: background 0.2s ease;
+    transition: all 0.2s ease;
     color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
   .dropdown-option:hover {
-    background: #f5f5f5;
+    background: rgba(0, 0, 0, 0.03);
+    color: #333;
   }
 
-  .dropdown-option.success {
-    border-left: 3px solid var(--toast-success-light);
+  .dropdown-option.selected {
+    background-color: rgba(0, 0, 0, 0.05);
+    font-weight: 600;
+    color: #333;
+  }
+  
+  /* Remove dividers between options */
+  .dropdown-option:not(:last-child) {
+    border-bottom: none;
   }
 
-  .dropdown-option.error {
-    border-left: 3px solid var(--toast-error-light);
+  /* Style the selected dropdown without indicators */
+  .dropdown-selected {
+    position: relative;
+    padding: 8px 12px;
   }
 
-  .dropdown-option.info {
-    border-left: 3px solid var(--toast-info-light);
+  /* Mobile specific styles */
+  @media (max-width: 768px) {
+    .nav-header {
+      padding: 0.5rem 1rem;
+    }
+    .nav-brand {
+      font-size: 1rem;
+    }
+    .nav-controls {
+      gap: 1rem;
+    }
+    .container {
+      padding: 1rem;
+    }
+    .toast-header h1 {
+      font-size: clamp(1.5rem, 4vw, 2rem);
+    }
+    .toast-header p {
+      width: 80%;
+      font-size: clamp(0.9rem, 2.5vw, 1rem);
+    }
+    .step {
+      gap: 0.25rem;
+    }
+    .step-number {
+      width: 24px;
+      height: 24px;
+    }
+    .step p {
+      font-size: clamp(0.75rem, 2vw, 1rem);
+    }
+    .demo-controls {
+      padding: 1rem;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .control-group {
+      min-width: 100%;
+    }
+    .footer {
+      padding: 1rem 0;
+    }
   }
 
-  /* Update footer */
-  .footer {
-    text-align: center;
-    padding: 2rem 0;
-    color: #666;
-    font-size: 0.9rem;
-    font-weight: 500;
-    margin-top: 2rem;
+  /* When dropdown is open, rotate the arrow */
+  .open + .dropdown-selected:after,
+  .dropdown-selected.open:after {
+    transform: rotate(180deg);
   }
 
-  .footer span {
-    color: #ff4b4b;
+  /* Hide duplicate dropdown in demo controls */
+  .demo-controls {
+    display: none;
+  }
+  
+  /* Update nav controls styling to accommodate dropdown */
+  .nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  
+  /* Make dropdown in nav header more compact and stylish */
+  .nav-controls .custom-dropdown {
+    width: auto;
+    min-width: 120px;
+  }
+  
+  .nav-controls .dropdown-selected {
+    font-size: 0.75rem;
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid #e0e0e0;
+  }
+  
+  .nav-controls .dropdown-options {
+    min-width: 120px;
+  }
+  
+  .nav-controls .dropdown-option {
+    font-size: 0.75rem;
+    padding: 6px 10px;
   }
 `;
 document.head.appendChild(style);
@@ -763,6 +887,14 @@ navHeader.innerHTML = `
         <div class="theme-slider-track"></div>
       </div>
     </div>
+    <div class="custom-dropdown" id="type-dropdown">
+      <div class="dropdown-selected" onclick="window.toggleDropdown()">success</div>
+      <div class="dropdown-options">
+        <div class="dropdown-option success selected" onclick="window.selectToastType('success')">success</div>
+        <div class="dropdown-option error" onclick="window.selectToastType('error')">error</div>
+        <div class="dropdown-option info" onclick="window.selectToastType('info')">info</div>
+      </div>
+    </div>
   </div>
 `;
 document.body.appendChild(navHeader);
@@ -777,27 +909,14 @@ container.innerHTML = `
     </div>
 
     <div class="doc-section">
-      <a href="https://github.com/sambabib/cross-toast" target="_blank" class="doc-github">View Github Doc</a>
+      <a href="https://github.com/sambabib/cross-toast" target="_blank" class="doc-github">View on Github</a>
+      <button class="try-toast-btn" onclick="window.tryToastDemo()">Try Cross Toast</button>
     </div>
 
     <div class="predemo-tabs">
       <h2>Usage</h2>
-      <div class="steps">
-        <div class="step">
-          <span class="step-number">1</span>
-          <p>Install the package for your framework</p>
-          <code data-copy="npm install @cross-toast/react"><span>npm install @cross-toast/react</span><span class="copy-tooltip">Click to copy</span></code>
-        </div>
-        <div class="step">
-          <span class="step-number">2</span>
-          <p>Import and use in your component</p>
-          <code data-copy="import { ReactToast } from '@cross-toast/react'"><span>import { ReactToast } from '@cross-toast/react'</span><span class="copy-tooltip">Click to copy</span></code>
-        </div>
-        <div class="step">
-          <span class="step-number">3</span>
-          <p>Customize and show your toast!</p>
-          <code data-copy="<ReactToast message=\"Hello World!\" />"><span>&lt;ReactToast message="Hello World!" /&gt;</span><span class="copy-tooltip">Click to copy</span></code>
-        </div>
+      <div class="steps" id="framework-steps">
+        <!-- Will be populated by updateStepperContent -->
       </div>
     </div>
     
@@ -807,58 +926,7 @@ container.innerHTML = `
         <button class="tab-button" onclick="window.switchTab('vue')">Vue</button>
       </div>
     </div>
-
-    <div class="demo-controls">
-      <div class="control-group">
-        <label>Type</label>
-        <div class="custom-dropdown" id="type-dropdown">
-          <div class="dropdown-selected" onclick="window.toggleDropdown()">Success</div>
-          <div class="dropdown-options">
-            <div class="dropdown-option success" onclick="window.selectToastType(window.currentFramework, 'success')">Success</div>
-            <div class="dropdown-option error" onclick="window.selectToastType(window.currentFramework, 'error')">Error</div>
-            <div class="dropdown-option info" onclick="window.selectToastType(window.currentFramework, 'info')">Info</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="react-section" class="demo-section active">
-      <h2>Change Position</h2>
-      <div class="example-container">
-        <pre class="example-code" data-copy="<Toaster
-  position=&quot;bottom-right&quot;
-  reverseOrder=false
-/>">&lt;Toaster
-          position=<span class="highlight">"bottom-right"</span>
-          reverseOrder=<span class="highlight">false</span>
-        /&gt;</pre>
-      </div>
-      <div class="position-grid">
-        <button class="position-button" data-position="top-left" onclick="window.showPositionedToast('react', 'top-left')">top-left</button>
-        <button class="position-button" data-position="top-right" onclick="window.showPositionedToast('react', 'top-right')">top-right</button>
-        <button class="position-button" data-position="bottom-left" onclick="window.showPositionedToast('react', 'bottom-left')">bottom-left</button>
-        <button class="position-button active" data-position="bottom-right" onclick="window.showPositionedToast('react', 'bottom-right')">bottom-right</button>
-      </div>
-    </div>
-
-    <div id="vue-section" class="demo-section">
-      <h2>Change Position</h2>
-      <div class="example-container">
-        <pre class="example-code" data-copy="<Toaster
-  position=&quot;bottom-right&quot;
-  reverseOrder=false
-/>">&lt;Toaster
-          position=<span class="highlight">"bottom-right"</span>
-          reverseOrder=<span class="highlight">false</span>
-        /&gt;</pre>
-      </div>
-      <div class="position-grid">
-        <button class="position-button" data-position="top-left" onclick="window.showPositionedToast('vue', 'top-left')">top-left</button>
-        <button class="position-button" data-position="top-right" onclick="window.showPositionedToast('vue', 'top-right')">top-right</button>
-        <button class="position-button" data-position="bottom-left" onclick="window.showPositionedToast('vue', 'bottom-left')">bottom-left</button>
-        <button class="position-button active" data-position="bottom-right" onclick="window.showPositionedToast('vue', 'bottom-right')">bottom-right</button>
-      </div>
-    </div>
+    <!-- Demo sections will be inserted here by switchTab function -->
 
     <footer class="footer">
       Made with <span>❤️</span> by sambabib
@@ -873,22 +941,26 @@ reactRoot.id = 'react-root';
 document.body.appendChild(reactRoot);
 const reactRootInstance = createRoot(reactRoot);
 
-// State management
-let currentFramework: 'react' | 'vue' = 'react';
-const toastTypes: Record<'react' | 'vue', ToastType> = { react: 'success', vue: 'success' };
-const themes: Record<'react' | 'vue', 'light' | 'dark' | 'auto'> = { react: 'light', vue: 'light' };
+// Framework and theme state
+let currentFramework: 'react' | 'vue' = 'react'; // Default
+const themes: Record<'react' | 'vue', 'light' | 'dark'> = { react: 'light', vue: 'light' };
+// Use a single global toast type instead of per-framework types
+let currentToastType: ToastType = 'success';
+
+// Initialize the default framework view
+switchTab('react');
+
+// Helper function to get the appropriate toast API based on the current framework
+function getToast(): typeof reactToast {
+  return currentFramework === 'react' ? reactToast : vueToast;
+}
 
 // Quick toast function for the Toast Me button
-function showQuickToast() {
-  reactRootInstance.render(
-    React.createElement(ReactToast, {
-      message: 'Thanks for trying Cross Toast! 🎉',
-      position: 'bottom-right',
-      type: 'success',
-      theme: 'light',
-      onHide: () => reactRootInstance.render(null),
-    })
-  );
+function showQuickToast(): void {
+  getToast().success("Thanks for trying Cross Toast! 🎉", {
+    position: 'bottom-right',
+    theme: themes[currentFramework]
+  });
 }
 
 // Switch between framework tabs
@@ -902,6 +974,9 @@ function switchTab(framework: 'react' | 'vue') {
       btn.classList.add('active');
     }
   });
+
+  // Update stepper content based on selected framework
+  updateStepperContent(framework);
 
   // Update nav framework selector
   document.querySelectorAll('.nav-framework-option').forEach(option => {
@@ -923,15 +998,28 @@ function switchTab(framework: 'react' | 'vue') {
 
   if (framework === 'react') {
     activeSection.innerHTML = `
-      <h2>Change Position</h2>
       <div class="example-container">
-        <pre class="example-code" data-copy="<Toaster
-  position=&quot;bottom-right&quot;
-  reverseOrder=false
-/>">&lt;Toaster
-          position=<span class="highlight">"bottom-right"</span>
-          reverseOrder=<span class="highlight">false</span>
-        /&gt;</pre>
+        <pre class="example-code" data-copy="import { toast } from 'cross-toast/react';
+
+function App() {
+  const showCustomToast = () => {
+    toast.success('Operation successful!', {
+      position: 'top-right',
+      duration: 5000,
+      theme: 'dark',
+    });
+  };
+}">import { toast } from 'cross-toast/react';
+
+function App() {
+  const showCustomToast = () => {
+    toast.success('Operation successful!', {
+      position: <span class="highlight">'top-right'</span>,
+      duration: <span class="highlight">5000</span>,
+      theme: <span class="highlight">'dark'</span>,
+    });
+  };
+}</pre>
       </div>
       <div class="position-grid">
         <button class="position-button" data-position="top-left" onclick="window.showPositionedToast('react', 'top-left')">top-left</button>
@@ -942,15 +1030,32 @@ function switchTab(framework: 'react' | 'vue') {
     `;
   } else {
     activeSection.innerHTML = `
-      <h2>Change Position</h2>
       <div class="example-container">
-        <pre class="example-code" data-copy="<Toaster
-  position=&quot;bottom-right&quot;
-  reverseOrder=false
-/>">&lt;Toaster
-          position=<span class="highlight">"bottom-right"</span>
-          reverseOrder=<span class="highlight">false</span>
-        /&gt;</pre>
+        <pre class="example-code" data-copy="import { toast } from 'cross-toast/vue';
+
+export default {
+  methods: {
+    showCustomToast() {
+      toast.success('Operation successful!', {
+        position: 'top-right',
+        duration: 5000,
+        theme: 'dark',
+      });
+    }
+  }
+}">import { toast } from 'cross-toast/vue';
+
+export default {
+  methods: {
+    showCustomToast() {
+      toast.success('Operation successful!', {
+        position: <span class="highlight">'top-right'</span>,
+        duration: <span class="highlight">5000</span>,
+        theme: <span class="highlight">'dark'</span>,
+      });
+    }
+  }
+}</pre>
       </div>
       <div class="position-grid">
         <button class="position-button" data-position="top-left" onclick="window.showPositionedToast('vue', 'top-left')">top-left</button>
@@ -986,13 +1091,23 @@ function updateUIForCurrentFramework(framework: 'react' | 'vue') {
   }
 
   // Update type dropdown
-  const currentType = toastTypes[framework];
+  const currentType = currentToastType;
   const dropdown = document.getElementById('type-dropdown');
   const selected = dropdown?.querySelector('.dropdown-selected');
 
   if (selected) {
-    selected.textContent = currentType.charAt(0).toUpperCase() + currentType.slice(1);
+    // Just set the text content to the type (CSS will handle uppercase)
+    selected.textContent = currentType;
   }
+
+  // Update dropdown options for the selected type
+  const allOptions = document.querySelectorAll('.dropdown-option');
+  allOptions.forEach(option => {
+    option.classList.remove('selected');
+    if (option instanceof HTMLElement && option.textContent?.toLowerCase() === currentType.toLowerCase()) {
+      option.classList.add('selected');
+    }
+  });
 }
 
 // Set theme for a framework
@@ -1007,6 +1122,57 @@ function setTheme(framework: 'react' | 'vue', theme: 'light' | 'dark') {
       btn.classList.add('active');
     }
   });
+}
+
+// Toggle theme between light and dark
+function toggleTheme(): void {
+  const framework = currentFramework;
+  const newTheme = themes[framework] === 'light' ? 'dark' : 'light';
+  setTheme(framework, newTheme);
+
+  // Update theme for framework
+  themes[framework] = newTheme;
+
+  // Update theme slider
+  const themeSlider = document.getElementById('theme-slider');
+  const thumb = themeSlider?.querySelector('.theme-slider-thumb');
+
+  if (thumb) {
+    thumb.className = 'theme-slider-thumb ' + newTheme;
+  }
+
+  // Show toast notification about theme change with the currently selected type
+  const message = `Switched to ${newTheme} theme! 🌓`;
+  const type = currentToastType;
+  const toast = getToast();
+
+  switch (type) {
+    case 'success':
+      toast.success(message, {
+        theme: newTheme,
+        position: 'bottom-right'
+      });
+      break;
+    case 'error':
+      toast.error(message, {
+        theme: newTheme,
+        position: 'bottom-right'
+      });
+      break;
+    case 'info':
+      toast.info(message, {
+        theme: newTheme,
+        position: 'bottom-right'
+      });
+      break;
+    default:
+      toast.show({
+        message,
+        position: 'bottom-right',
+        type,
+        theme: newTheme
+      });
+  }
 }
 
 // Show positioned toast for each framework
@@ -1043,34 +1209,38 @@ function showPositionedToast(framework: 'react' | 'vue', position: 'top-left' | 
     }
   }
 
-  // Show the toast notification
+  // Show the toast notification using the new API
   const message = `${framework.charAt(0).toUpperCase() + framework.slice(1)} toast in ${position} position! 🎯`;
 
-  if (framework === 'react') {
-    reactRootInstance.render(
-      React.createElement(ReactToast, {
+  const type = currentToastType;
+  const toast = framework === 'react' ? reactToast : vueToast;
+
+  switch (type) {
+    case 'success':
+      toast.success(message, {
+        position,
+        theme: themes[framework]
+      });
+      break;
+    case 'error':
+      toast.error(message, {
+        position,
+        theme: themes[framework]
+      });
+      break;
+    case 'info':
+      toast.info(message, {
+        position,
+        theme: themes[framework]
+      });
+      break;
+    default:
+      toast.show({
         message,
         position,
-        type: toastTypes.react,
-        theme: themes.react,
-        onHide: () => reactRootInstance.render(null),
-      })
-    );
-  } else if (framework === 'vue') {
-    const mountEl = document.createElement('div');
-    document.body.appendChild(mountEl);
-
-    const app = createApp({
-      render: () => h(VueToast, {
-        message,
-        position,
-        type: toastTypes.vue,
-        theme: themes.vue,
-        onHide: () => app.unmount()
-      })
-    });
-
-    app.mount(mountEl);
+        type,
+        theme: themes[framework]
+      });
   }
 }
 
@@ -1087,7 +1257,8 @@ Object.assign(window, {
   selectToastType,
   updateUIForCurrentFramework,
   copyToClipboard,
-  initializeCodeCopyHandlers
+  initializeCodeCopyHandlers,
+  tryToastDemo
 });
 
 // TypeScript declarations
@@ -1105,12 +1276,13 @@ declare global {
     updateUIForCurrentFramework: typeof updateUIForCurrentFramework;
     copyToClipboard: typeof copyToClipboard;
     initializeCodeCopyHandlers: typeof initializeCodeCopyHandlers;
+    tryToastDemo: typeof tryToastDemo;
   }
 }
 
 // Update setToastType function
-function setToastType(framework: 'react' | 'vue', type: ToastType) {
-  toastTypes[framework] = type;
+function setToastType(type: ToastType) {
+  currentToastType = type;
   const buttons = document.querySelectorAll(`.type-buttons button`);
   buttons.forEach(button => {
     button.classList.remove('active');
@@ -1121,55 +1293,19 @@ function setToastType(framework: 'react' | 'vue', type: ToastType) {
 }
 
 // Add new functions for theme slider and dropdown
-function toggleTheme(framework: 'react' | 'vue') {
-  const currentTheme = themes[framework];
-  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-  themes[framework] = newTheme;
-
-  // Update slider UI
-  const themeSlider = document.getElementById('theme-slider');
-  const thumb = themeSlider?.querySelector('.theme-slider-thumb');
-
-  if (thumb) {
-    thumb.className = 'theme-slider-thumb ' + newTheme;
-  }
-
-  // Show a toast notification about the theme change
-  // Always use React toast (as specified)
-  if (newTheme === 'dark') {
-    reactRootInstance.render(
-      React.createElement(ReactToast, {
-        message: 'Welcome to Cross Toast 🌙',
-        position: 'bottom-right',
-        type: 'success',
-        theme: 'dark',
-        onHide: () => reactRootInstance.render(null),
-      })
-    );
-  } else {
-    reactRootInstance.render(
-      React.createElement(ReactToast, {
-        message: 'Welcome to Cross Toast ☀️',
-        position: 'bottom-right',
-        type: 'success',
-        theme: 'light',
-        onHide: () => reactRootInstance.render(null),
-      })
-    );
-  }
-}
-
 function toggleDropdown() {
   const dropdown = document.getElementById('type-dropdown');
   const options = dropdown?.querySelector('.dropdown-options');
+  const selected = dropdown?.querySelector('.dropdown-selected');
 
-  if (options) {
+  if (options && selected) {
     options.classList.toggle('open');
+    selected.classList.toggle('open');
   }
 }
 
-function selectToastType(framework: 'react' | 'vue', type: ToastType) {
-  toastTypes[framework] = type;
+function selectToastType(type: ToastType) {
+  currentToastType = type;
 
   // Update dropdown UI
   const dropdown = document.getElementById('type-dropdown');
@@ -1177,57 +1313,97 @@ function selectToastType(framework: 'react' | 'vue', type: ToastType) {
   const options = dropdown?.querySelector('.dropdown-options');
 
   if (selected && options) {
-    selected.textContent = type.charAt(0).toUpperCase() + type.slice(1);
+    // Just set the text content to the type (CSS will handle uppercase)
+    selected.textContent = type;
+
+    // Remove any type classes and add only the needed classes
+    selected.className = 'dropdown-selected';
+
+    // Close dropdown
     options.classList.remove('open');
+    selected.classList.remove('open');
   }
+
+  // Update selected state for the dropdown options
+  const allOptions = document.querySelectorAll('.dropdown-option');
+  allOptions.forEach(option => {
+    option.classList.remove('selected');
+    if (option instanceof HTMLElement && option.textContent?.toLowerCase() === type.toLowerCase()) {
+      option.classList.add('selected');
+    }
+  });
 }
 
 // Add window click handler to close dropdown when clicking outside
 document.addEventListener('click', function (event) {
   const dropdown = document.getElementById('type-dropdown');
   const options = dropdown?.querySelector('.dropdown-options');
+  const selected = dropdown?.querySelector('.dropdown-selected');
 
   // Check if click is outside the dropdown
-  if (dropdown && options && !dropdown.contains(event.target as Node)) {
+  if (dropdown && options && selected && !dropdown.contains(event.target as Node)) {
     options.classList.remove('open');
+    selected.classList.remove('open');
   }
 }, true);
 
-// Function to copy code to clipboard
-function copyToClipboard(text: string, element: HTMLElement) {
-  navigator.clipboard.writeText(text).then(() => {
-    // Show success state
-    element.classList.add('copied');
+// Copy text to clipboard
+function copyToClipboard(text: string, element?: HTMLElement): void {
+  // Create a textarea element to copy from
+  const textArea = document.createElement('textarea');
+  textArea.value = text;
+  textArea.style.position = 'fixed';  // Avoid scrolling to bottom
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
 
-    // Update tooltip
-    const tooltip = element.querySelector('.copy-tooltip');
-    if (tooltip) {
-      tooltip.textContent = 'Copied!';
+  try {
+    const successful = document.execCommand('copy');
+
+    // Show visual feedback
+    if (element) {
+      // Add success class for visual feedback
+      element.classList.add('copy-success');
+
+      // Update tooltip if it exists
+      const tooltip = element.querySelector('.copy-tooltip');
+      if (tooltip) {
+        tooltip.textContent = 'Copied!';
+      }
+
+      // Reset after animation
+      setTimeout(() => {
+        element.classList.remove('copy-success');
+        if (tooltip) {
+          tooltip.textContent = 'Click to copy';
+        }
+      }, 2000);
     }
 
-    // Reset after 2 seconds
-    setTimeout(() => {
-      element.classList.remove('copied');
-      if (tooltip) {
-        tooltip.textContent = 'Click to copy';
-      }
-    }, 2000);
-  }).catch(err => {
-    console.error('Could not copy text: ', err);
-
-    // Show error in tooltip
-    const tooltip = element.querySelector('.copy-tooltip');
-    if (tooltip) {
-      tooltip.textContent = 'Failed to copy';
+    // Show toast notification
+    if (successful) {
+      getToast().success("Copied to clipboard! 📋", {
+        position: 'bottom-right',
+        theme: themes[currentFramework]
+      });
+    } else {
+      getToast().error("Failed to copy to clipboard 😞", {
+        position: 'bottom-right',
+        theme: themes[currentFramework]
+      });
     }
+  } catch (err) {
+    console.error('Unable to copy to clipboard', err);
 
-    // Reset after 2 seconds
-    setTimeout(() => {
-      if (tooltip) {
-        tooltip.textContent = 'Click to copy';
-      }
-    }, 2000);
-  });
+    // Show error toast
+    getToast().error("Failed to copy to clipboard 😞", {
+      position: 'bottom-right',
+      theme: themes[currentFramework]
+    });
+  }
+
+  // Clean up
+  document.body.removeChild(textArea);
 }
 
 // Function to initialize click handlers for code elements
@@ -1249,10 +1425,107 @@ function initializeCodeCopyHandlers() {
   });
 }
 
+// Function to update the stepper content based on the selected framework
+function updateStepperContent(framework: 'react' | 'vue') {
+  const stepsContainer = document.getElementById('framework-steps');
+  if (!stepsContainer) return;
+
+  let stepsHTML = '';
+
+  if (framework === 'react') {
+    stepsHTML = `
+      <div class="step">
+        <span class="step-number">1</span>
+        <p>Install the package for your framework</p>
+        <code data-copy="npm install @cross-toast/react"><span>npm install @cross-toast/react</span><span class="copy-tooltip">Click to copy</span></code>
+      </div>
+      <div class="step">
+        <span class="step-number">2</span>
+        <p>Import and use in your component</p>
+        <code data-copy="import { toast } from '@cross-toast/react';"><span>import { toast } from '@cross-toast/react';</span><span class="copy-tooltip">Click to copy</span></code>
+      </div>
+      <div class="step">
+        <span class="step-number">3</span>
+        <p>Show a toast with one line</p>
+        <code data-copy="toast.success('Operation successful!');"><span>toast.success('Operation successful!');</span><span class="copy-tooltip">Click to copy</span></code>
+      </div>
+    `;
+  } else {
+    stepsHTML = `
+      <div class="step">
+        <span class="step-number">1</span>
+        <p>Install the package for your framework</p>
+        <code data-copy="npm install @cross-toast/vue"><span>npm install @cross-toast/vue</span><span class="copy-tooltip">Click to copy</span></code>
+      </div>
+      <div class="step">
+        <span class="step-number">2</span>
+        <p>Import the toast in your component</p>
+        <code data-copy="import { toast } from '@cross-toast/vue';"><span>import { toast } from '@cross-toast/vue';</span><span class="copy-tooltip">Click to copy</span></code>
+      </div>
+      <div class="step">
+        <span class="step-number">3</span>
+        <p>Show a toast in your methods</p>
+        <code data-copy="toast.success('Action completed!', { position: 'bottom-left' });"><span>toast.success('Action completed!', { position: 'bottom-left' });</span><span class="copy-tooltip">Click to copy</span></code>
+      </div>
+    `;
+  }
+
+  stepsContainer.innerHTML = stepsHTML;
+
+  // Re-initialize code copy handlers for the updated stepper
+  document.querySelectorAll('.step code').forEach(codeElement => {
+    codeElement.addEventListener('click', function (this: HTMLElement) {
+      const textToCopy = this.getAttribute('data-copy') || this.textContent || '';
+      copyToClipboard(textToCopy, this);
+    });
+  });
+}
+
+// Function to demo toast with current type
+function tryToastDemo(): void {
+  const type = currentToastType;
+  const toast = getToast();
+  const message = `This is a ${type} toast notification! 🎯`;
+
+  switch (type) {
+    case 'success':
+      toast.success(message, {
+        position: 'bottom-right',
+        theme: themes[currentFramework]
+      });
+      break;
+    case 'error':
+      toast.error(message, {
+        position: 'bottom-right',
+        theme: themes[currentFramework]
+      });
+      break;
+    case 'info':
+      toast.info(message, {
+        position: 'bottom-right',
+        theme: themes[currentFramework]
+      });
+      break;
+    default:
+      toast.show({
+        message,
+        position: 'bottom-right',
+        type,
+        theme: themes[currentFramework]
+      });
+  }
+}
+
 // Initialize UI once document is loaded
 document.addEventListener('DOMContentLoaded', function () {
   // Set initial UI state for the current framework
   updateUIForCurrentFramework(currentFramework);
+
+  // Initialize stepper content for the default framework
+  updateStepperContent(currentFramework);
+
+  // Ensure the correct framework tab is rendered on initial load
+  switchTab(currentFramework);
 
   // Close dropdown when clicking on dropdown options (to avoid bubbling)
   document.querySelectorAll('.dropdown-option').forEach(option => {
