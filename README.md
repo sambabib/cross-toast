@@ -4,17 +4,24 @@
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/cross-toast)](https://bundlephobia.com/package/cross-toast)
 [![License](https://img.shields.io/npm/l/cross-toast.svg)](https://github.com/sambabib/cross-toast/blob/main/LICENSE)
 
-A lightweight, customizable toast notification library that works seamlessly across Vue, React, and vanilla JavaScript.
+A lightweight, customizable toast notification library that works seamlessly across React and Vue.
 
 ## Features
 
--  **Framework Agnostic** - Works with Vue, React, or vanilla JavaScript
+-  **Framework Support** - Works with both React and Vue
 -  **Customizable Positioning** - Place toasts in any corner of the screen
 -  **Beautiful Animations** - Smooth enter/exit transitions with consistent behavior across frameworks
--  **Toast Types** - Success and Error types with customizable styling
+-  **Toast Types** - Success, Error, and Info types with customizable styling
 -  **Theme Support** - Light, dark, and auto themes available
 -  **Lightweight** - < 5KB minified and gzipped
 -  **Zero Dependencies** - No bloat, just what you need
+-  **TypeScript Support** - Full type definitions included
+
+## Demo
+
+Check out the [live demo](https://cross-toast-demo.vercel.app) to see Cross-Toast in action.
+
+![Cross-Toast Demo](https://github.com/sambabib/cross-toast/raw/main/docs/images/demo.gif)
 
 ## Installation
 
@@ -151,6 +158,106 @@ function App() {
 
 ### Vue
 
+Cross Toast provides an equivalent API for Vue applications.
+
+#### Basic Usage
+
+The simplest way to use Cross Toast is with the toast function API:
+
+```vue
+<template>
+  <button @click="showToast">Show Toast</button>
+</template>
+
+<script>
+import { toast } from 'cross-toast/vue';
+
+export default {
+  methods: {
+    showToast() {
+      // Show a success toast with default options
+      toast.success('Operation successful!');
+      
+      // Or show an error toast
+      toast.error('Something went wrong!');
+      
+      // Or an info toast
+      toast.info('This is an informational message');
+    }
+  }
+}
+</script>
+```
+
+#### With Custom Options
+
+You can customize the toast by providing additional options:
+
+```vue
+<template>
+  <button @click="showCustomToast">Show Custom Toast</button>
+</template>
+
+<script>
+import { toast } from 'cross-toast/vue';
+
+export default {
+  methods: {
+    showCustomToast() {
+      toast.success('Operation successful!', {
+        position: 'top-right',      // 'top-right', 'top-left', 'bottom-right', 'bottom-left'
+        duration: 5000,             // Duration in milliseconds
+        theme: 'dark',              // 'light', 'dark', or 'auto'
+      });
+    }
+  }
+}
+</script>
+```
+
+#### Advanced Usage
+
+For more control, you can use the `show` method directly:
+
+```vue
+<template>
+  <div>
+    <button @click="showAdvancedToast">Show Advanced Toast</button>
+    <button @click="dismissAllToasts">Dismiss All Toasts</button>
+  </div>
+</template>
+
+<script>
+import { toast } from 'cross-toast/vue';
+
+export default {
+  methods: {
+    showAdvancedToast() {
+      const id = toast.show({
+        message: 'This is a fully customized toast',
+        type: 'success',             // 'success', 'error', or 'info'
+        position: 'bottom-left',
+        duration: 4000,
+        theme: 'auto',
+        onHide: () => console.log('Toast was hidden')
+      });
+      
+      // You can dismiss the toast programmatically
+      // setTimeout(() => toast.dismiss(id), 2000);
+    },
+    
+    dismissAllToasts() {
+      toast.dismissAll();
+    }
+  }
+}
+</script>
+```
+
+#### Using the Component Directly (Alternative)
+
+If you need more control over the rendering process, you can still use the `VueToast` component directly:
+
 ```vue
 <template>
   <button @click="showToast">Show Toast</button>
@@ -189,6 +296,7 @@ export default {
   }
 }
 </script>
+```
 
 ## How It Works
 
@@ -231,30 +339,104 @@ Cross-Toast supports three theme options:
 
 ## Styling
 
-Cross-Toast comes with default styling that you can customize by overriding the CSS variables or classes:
+Cross-Toast comes with default styling that you can customize by overriding the CSS variables or classes.
+
+### CSS Variables
+
+You can customize the appearance by overriding these CSS variables:
 
 ```css
-/* Example of customizing toast styles using CSS variables */
 :root {
   --toast-bg: #ffffff;
   --toast-text: #333333;
   --toast-shadow: rgba(0, 0, 0, 0.1);
   --toast-success: #4caf50;
   --toast-error: #f44336;
+  --toast-info: #2196f3;
+  --toast-border-radius: 10px;
 }
+```
 
-/* Or by overriding specific classes */
+### Custom Class Overrides
+
+You can also target specific classes for more detailed customization:
+
+```css
+/* Override container styles */
 .toast-container {
-  /* Your custom container styles */
+  max-width: 400px;
+  padding: 12px;
 }
 
+/* Override success type */
 .toast-content.success {
-  /* Custom success toast styles */
+  background-image: linear-gradient(to right, #00c853, #00e676);
+  color: white;
 }
 
+/* Override error type */
 .toast-content.error {
-  /* Custom error toast styles */
+  background-image: linear-gradient(to right, #d50000, #ff1744);
+  color: white;
 }
+
+/* Override info type */
+.toast-content.info {
+  background-image: linear-gradient(to right, #0091ea, #00b0ff);
+  color: white;
+}
+```
+
+## TypeScript Support
+
+Cross-Toast comes with full TypeScript definitions. The main types available are:
+
+```typescript
+// Toast position options
+type ToastPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+
+// Toast type options
+type ToastType = 'success' | 'error' | 'info';
+
+// Toast theme options
+type ToastTheme = 'light' | 'dark' | 'auto';
+
+// Toast base properties
+interface ToastProps {
+  message: string;
+  type?: ToastType;
+  position?: ToastPosition;
+  duration?: number;
+  theme?: ToastTheme;
+  onHide?: () => void;
+}
+
+// Toast API interface
+interface ToastAPI {
+  show: (props: ToastProps, theme?: ToastTheme) => string;
+  success: (message: string, options?: Partial<Omit<ToastProps, 'message' | 'type'>>) => string;
+  error: (message: string, options?: Partial<Omit<ToastProps, 'message' | 'type'>>) => string;
+  info: (message: string, options?: Partial<Omit<ToastProps, 'message' | 'type'>>) => string;
+  dismiss: (id: string) => void;
+  dismissAll: () => void;
+}
+```
+
+Usage example:
+
+```typescript
+import { toast, ToastProps } from 'cross-toast/react';
+
+const customToast: ToastProps = {
+  message: 'Typed toast notification',
+  type: 'success',
+  position: 'top-right',
+  duration: 5000,
+  theme: 'dark',
+  onHide: () => console.log('Toast hidden')
+};
+
+toast.show(customToast);
 ```
 
 ## API Reference
@@ -264,15 +446,67 @@ Cross-Toast comes with default styling that you can customize by overriding the 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `message` | string | required | The message to display in the toast |
-| `type` | string | `'success'` | Toast type: `'success'` or `'error'` |
+| `type` | string | `'success'` | Toast type: `'success'`, `'error'`, or `'info'` |
 | `position` | string | `'bottom-right'` | Position on screen: `'top-left'`, `'top-right'`, `'bottom-left'`, `'bottom-right'` |
 | `duration` | number | `3000` | Duration in ms before the toast disappears |
 | `theme` | string | `'auto'` | Theme to use: `'light'`, `'dark'`, or `'auto'` (follows system preference) |
 | `onHide` | function | `undefined` | Callback function when toast is hidden |
 
+### Toast API Methods
+
+| Method | Parameters | Return | Description |
+|--------|------------|--------|-------------|
+| `show` | `props: ToastProps, theme?: ToastTheme` | `string` (toast ID) | Shows a toast with custom properties |
+| `success` | `message: string, options?: Partial<ToastProps>` | `string` (toast ID) | Shows a success toast |
+| `error` | `message: string, options?: Partial<ToastProps>` | `string` (toast ID) | Shows an error toast |
+| `info` | `message: string, options?: Partial<ToastProps>` | `string` (toast ID) | Shows an info toast |
+| `dismiss` | `id: string` | `void` | Dismisses a specific toast by ID |
+| `dismissAll` | none | `void` | Dismisses all active toasts |
+
+## Accessibility
+
+Cross-Toast implements accessibility features to ensure a good experience for all users:
+
+- Toast notifications use appropriate ARIA roles and attributes
+- High contrast themes ensure readability
+- Keyboard focus management for interactive elements
+- Screen reader friendly notifications
+
 ## Browser Support
 
-Cross-Toast supports all modern browsers (Chrome, Firefox, Safari, Edge).
+Cross-Toast supports all modern browsers:
+
+- Chrome (latest 2 versions)
+- Firefox (latest 2 versions)
+- Safari (latest 2 versions)
+- Edge (latest 2 versions)
+
+## Troubleshooting
+
+### Common Issues
+
+#### Toasts not showing up
+
+If toasts aren't appearing, check:
+- You're importing from the correct path (`cross-toast/react` or `cross-toast/vue`)
+- You have the correct CSS imported or included
+- There are no CSS conflicts with existing styles in your application
+
+#### Z-index Issues
+
+If toasts appear behind other elements:
+```css
+.toast-container {
+  z-index: 9999; /* Increase this value */
+}
+```
+
+#### Animation Issues
+
+If animations aren't working:
+- Ensure you haven't disabled animations in your browser
+- Check for CSS conflicts that might be overriding the animation properties
+
 
 ## License
 

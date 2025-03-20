@@ -135,7 +135,7 @@ style.textContent = `
   
   .container {
     width: 100%;
-    max-width: 800px;
+    max-width: 550px;
     margin: 0 auto;
     padding: 1rem;
     padding-top: 5rem; /* Space for fixed header */
@@ -164,6 +164,9 @@ style.textContent = `
     line-height: 1.2;
     font-weight: bold;
     margin: 0 0 1rem;
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
   }
   
   .toast-header p { 
@@ -172,7 +175,7 @@ style.textContent = `
     font-size: clamp(.8rem, 2vw, .9rem);
     line-height: 1.4;
     margin: 0;
-    max-width: 600px;
+    max-width: 400px;
     padding: 0 1rem;
     font-weight: 600;
   }
@@ -195,8 +198,8 @@ style.textContent = `
     width: 100%;
     max-width: 300px;
     text-align: center;
-    padding: 10px clamp(20px, 3vw, 28px);
-    font-size: clamp(0.875rem, 1.5vw, 1rem);
+    padding: 10px clamp(16px, 3vw, 24px);
+    font-size: clamp(0.675rem, 1.5vw, 0.8rem);
     border-radius: 10px;
     font-weight: 600;
     transition: all 0.3s ease;
@@ -214,7 +217,6 @@ style.textContent = `
   }
   
   .doc-github:hover {
-    background-color: var(--button-hover);
     border-color: var(--text-primary);
   }
   
@@ -226,7 +228,6 @@ style.textContent = `
   
   .try-toast-btn:hover {
     opacity: 0.9;
-    transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
@@ -331,7 +332,8 @@ style.textContent = `
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    max-width: 500px;
+    max-width: 400px;
+    margin: 0 auto;
   }
 
   .step code:hover {
@@ -470,6 +472,9 @@ style.textContent = `
     margin: 0;
     position: relative;
     cursor: pointer;
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .example-code:hover {
@@ -1009,8 +1014,8 @@ const container = document.createElement('div');
 container.innerHTML = `
   <div class="container">
     <div class="toast-header">
-      <h1>Cross Toast</h1>
-      <p> Lightweight, Beautiful, Framework agnostic toast.</p>
+      <h1>Beautiful toast notifications for modern web apps.</h1>
+      <p>You don't have to make your own toast.</p>
     </div>
 
     <div class="doc-section">
@@ -1019,6 +1024,9 @@ container.innerHTML = `
     </div>
 
     <div class="predemo-tabs">
+      <h1>Clean<br>
+        Lightweight<br>
+        Nearly framework agnostic</h1>
       <div class="steps" id="framework-steps">
         <!-- Will be populated by updateStepperContent -->
       </div>
