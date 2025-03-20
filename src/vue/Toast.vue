@@ -165,7 +165,7 @@ export default defineComponent({
   -webkit-backdrop-filter: blur(8px);
   color: var(--toast-text);
   padding: 12px 24px;
-  border-radius: 10px;
+  border-radius: 14px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   margin-bottom: 10px;
   display: flex;

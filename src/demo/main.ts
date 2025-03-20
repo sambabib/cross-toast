@@ -186,11 +186,10 @@ style.textContent = `
     align-items: center;
     justify-content: center;
     gap: 1rem;
-    margin: 2rem 0;
+    margin: 2rem auto;
     padding: 1rem;
     max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
+    width: 100%;
   }
   
   .doc-github,
@@ -240,8 +239,9 @@ style.textContent = `
   @media (min-width: 768px) {
     .doc-section {
       flex-direction: row-reverse;
-      max-width: 600px;
+      max-width: 500px;
       padding: 1.5rem;
+      margin: 2rem auto;
     }
 
     .doc-github,
@@ -253,8 +253,10 @@ style.textContent = `
 
   @media (max-width: 480px) {
     .doc-section {
+      max-width: 300px;
       padding: 1rem 0.5rem;
-      margin: 1rem 0;
+      margin: 1rem auto;
+      width: 90%;
     }
 
     .doc-github,
@@ -757,8 +759,8 @@ style.textContent = `
     font-weight: 600;
     border: 2px solid var(--border-color);
     transition: all 0.2s ease;
-    text-transform: uppercase;
     letter-spacing: 0.5px;
+    text-transform: capitalize;
   }
 
   .dropdown-selected:hover {
@@ -789,6 +791,8 @@ style.textContent = `
     flex-direction: column;
     z-index: 10;
     overflow: hidden;
+    padding: 4px;
+    gap: 6px;
   }
 
   .dropdown-option {
@@ -800,29 +804,20 @@ style.textContent = `
     font-size: 0.875rem;
     color: var(--text-secondary);
     transition: all 0.2s ease;
-    text-transform: uppercase;
     letter-spacing: 0.5px;
-  }
-
-  .dropdown-option:hover {
-    background: var(--button-hover);
-    color: var(--text-primary);
+    text-transform: capitalize;
+    border-radius: 4px;
   }
 
   .dropdown-option.selected {
-    background: var(--button-hover);
-    color: var(--text-primary);
-  }
-  
-  /* Remove dividers between options */
-  .dropdown-option:not(:last-child) {
-    border-bottom: none;
+    background: var(--text-primary);
+    color: var(--bg-primary);
+    border-radius: 10px;
   }
 
-  /* Style the selected dropdown without indicators */
-  .dropdown-selected {
-    position: relative;
-    padding: 8px 12px;
+  /* Update nav controls dropdown to match */
+  .nav-controls .dropdown-option.selected {
+    border-radius: 10px;
   }
 
   /* Mobile specific styles */
@@ -947,22 +942,24 @@ style.textContent = `
     background: var(--bg-primary);
     border: 2px solid var(--border-color);
     color: var(--text-primary);
-    text-transform: uppercase;
     letter-spacing: 0.5px;
+    text-transform: capitalize;
   }
   
   .nav-controls .dropdown-options {
     min-width: 120px;
     background: var(--bg-primary);
     border: 1px solid var(--border-color);
+    padding: 4px;
   }
   
   .nav-controls .dropdown-option {
     font-size: 0.75rem;
     padding: 6px 10px;
     color: var(--text-secondary);
-    text-transform: uppercase;
     letter-spacing: 0.5px;
+    text-transform: capitalize;
+    border-radius: 4px;
   }
 
   .nav-controls .dropdown-option:hover {
@@ -971,14 +968,43 @@ style.textContent = `
   }
 
   .nav-controls .dropdown-option.selected {
-    background: var(--button-hover);
-    color: var(--text-primary);
+    background: var(--text-primary);
+    color: var(--bg-primary);
   }
 
   .dropdown-options.open {
     display: flex;
     border: 1px solid var(--border-color);
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  @media (max-width: 480px) {
+    .toast-header h1 {
+      max-width: 320px;
+      padding: 0 1rem;
+    }
+
+    .toast-header p {
+      width: 80vw;
+      max-width: 280px;
+    }
+
+    .doc-section {
+      max-width: 300px;
+      padding: 1rem 0.5rem;
+    }
+
+    .step code {
+      max-width: 280px;
+      font-size: clamp(0.6rem, 1.1vw, 0.65rem);
+      padding: clamp(0.3rem, 0.8vw, 0.4rem) clamp(0.6rem, 1.2vw, 0.8rem);
+    }
+
+    .example-code {
+      max-width: 300px;
+      font-size: clamp(0.7rem, 1.3vw, 0.8rem);
+      padding: 0 1rem;
+    }
   }
 `;
 document.head.appendChild(style);
@@ -1013,32 +1039,35 @@ document.body.appendChild(navHeader);
 const container = document.createElement('div');
 container.innerHTML = `
   <div class="container">
-    <div class="toast-header">
-      <h1>Beautiful toast notifications for modern web apps.</h1>
-      <p>You don't have to make your own toast.</p>
-    </div>
+    <main>
+      <article>
+        <header class="toast-header">
+          <h1>Beautiful toast notifications for modern web apps.</h1>
+          <p>You don't have to make your own.</p>
+        </header>
 
-    <div class="doc-section">
-      <a href="https://github.com/sambabib/cross-toast" target="_blank" class="doc-github">View Documentation</a>
-      <button class="try-toast-btn" onclick="window.tryToastDemo()">Try Cross Toast</button>
-    </div>
+        <section class="doc-section" aria-label="Quick actions">
+          <a href="https://github.com/sambabib/cross-toast" target="_blank" class="doc-github">View Documentation</a>
+          <button class="try-toast-btn" onclick="window.tryToastDemo()">Try Cross Toast</button>
+        </section>
 
-    <div class="predemo-tabs">
-      <h1>Clean<br>
-        Lightweight<br>
-        Nearly framework agnostic</h1>
-      <div class="steps" id="framework-steps">
-        <!-- Will be populated by updateStepperContent -->
-      </div>
-    </div>
-    
-    <div class="demo-tabs">
-      <div class="tab-buttons">
-        <button class="tab-button active" onclick="window.switchTab('react')">React</button>
-        <button class="tab-button" onclick="window.switchTab('vue')">Vue</button>
-      </div>
-    </div>
-    <!-- Demo sections will be inserted here by switchTab function -->
+        <section class="predemo-tabs" aria-label="Features">
+          <h2>Clean<br>
+          Lightweight<br>
+          Nearly framework agnostic</h2>
+          <div class="steps" id="framework-steps">
+            <!-- Will be populated by updateStepperContent -->
+          </div>
+        </section>
+
+        <section class="demo-tabs" aria-label="Demo">
+          <div class="tab-buttons">
+            <button class="tab-button active" onclick="window.switchTab('react')">React</button>
+            <button class="tab-button" onclick="window.switchTab('vue')">Vue</button>
+          </div>
+        </section>
+      </article>
+    </main>
 
     <footer class="footer">
       Made with <span>❤️</span> by sambabib
@@ -1654,3 +1683,31 @@ document.addEventListener('DOMContentLoaded', function () {
   // Initialize code copy handlers
   initializeCodeCopyHandlers();
 });
+
+document.head.innerHTML += `
+  <!-- Primary Meta Tags -->
+  <title>Cross-Toast - Beautiful Toast Notifications for React and Vue</title>
+  <meta name="title" content="Cross-Toast - Beautiful Toast Notifications for React and Vue">
+  <meta name="description" content="A lightweight, customizable toast notification library with beautiful animations and theme support for React and Vue applications.">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://cross-toast-demo.vercel.app/">
+  <meta property="og:title" content="Cross-Toast - Beautiful Toast Notifications for React and Vue">
+  <meta property="og:description" content="A lightweight, customizable toast notification library with beautiful animations and theme support for React and Vue applications.">
+  <meta property="og:image" content="https://cross-toast-demo.vercel.app/og-image.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://cross-toast-demo.vercel.app/">
+  <meta property="twitter:title" content="Cross-Toast - Beautiful Toast Notifications for React and Vue">
+  <meta property="twitter:description" content="A lightweight, customizable toast notification library with beautiful animations and theme support for React and Vue applications.">
+  <meta property="twitter:image" content="https://cross-toast-demo.vercel.app/og-image.png">
+
+  <!-- Additional SEO Tags -->
+  <meta name="keywords" content="toast notifications, react toast, vue toast, javascript notifications, ui components, web development">
+  <meta name="robots" content="index, follow">
+  <meta name="language" content="English">
+  <meta name="author" content="Cross-Toast">
+  <link rel="canonical" href="https://cross-toast-demo.vercel.app/">
+`;
