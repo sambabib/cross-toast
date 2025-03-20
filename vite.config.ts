@@ -25,6 +25,7 @@ export default defineConfig({
       name: 'CrossFrameworkToast',
       fileName: (format) => `index.${format}.js`,
     },
+    outDir: 'demo-dist',
     rollupOptions: {
       external: ['react', 'react-dom', 'vue'],
       output: {
@@ -34,8 +35,10 @@ export default defineConfig({
           vue: 'Vue',
         },
       },
+      input: {
+        main: resolve(__dirname, 'src/demo/index.html'),
+      },
     },
-    outDir: 'dist',
   },
   server: {
     port: 3000,
@@ -46,4 +49,5 @@ export default defineConfig({
       '@': resolve(__dirname, 'src'),
     },
   },
+  base: '/cross-toast/', // This should match your repository name
 });
