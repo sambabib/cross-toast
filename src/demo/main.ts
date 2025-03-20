@@ -15,6 +15,7 @@ style.textContent = `
     --code-text: #E6D5C9;
     --button-hover: #F9F5F2;
     --transition-duration: 0.3s;
+    --bg-primary-rgb: 248, 249, 249;
   }
 
   :root[data-theme="dark"] {
@@ -26,6 +27,7 @@ style.textContent = `
     --code-bg: #2d2d2d;
     --code-text: #E6D5C9;
     --button-hover: #2d2d2d;
+    --bg-primary-rgb: 26, 26, 26;
   }
 
   * {
@@ -63,7 +65,7 @@ style.textContent = `
     align-items: center;
     gap: 0.5rem;
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: clamp(1rem, 2vw, 1.1rem);
     color: var(--text-primary);
     text-decoration: none;
     transition: opacity 0.3s ease;
@@ -74,7 +76,7 @@ style.textContent = `
   }
   
   .nav-brand-icon {
-    font-size: 1.25rem;
+    font-size: clamp(1.1rem, 2.5vw, 1.25rem);
     transition: transform 0.3s ease;
   }
   
@@ -177,13 +179,91 @@ style.textContent = `
   
   .doc-section {
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2rem;
-    margin-bottom: 2rem;
-    height: fit-content;
-    padding: 1.5rem;
+    gap: 1rem;
+    margin: 2rem 0;
+    padding: 1rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .doc-github,
+  .try-toast-btn {
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+    padding: 10px clamp(20px, 3vw, 28px);
+    font-size: clamp(0.875rem, 1.5vw, 1rem);
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+  
+  .doc-github {
+    border: 1px solid var(--border-color);
+    background-color: transparent;
+    color: var(--text-primary);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+  
+  .doc-github:hover {
+    background-color: var(--button-hover);
+    border-color: var(--text-primary);
+  }
+  
+  .try-toast-btn {
+    background-color: var(--text-primary);
+    color: var(--bg-primary);
+    border: 1px solid var(--text-primary);
+  }
+  
+  .try-toast-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .tab-button,
+  .position-button,
+  .control-button {
+    padding: 10px clamp(20px, 3vw, 28px);
+  }
+
+  @media (min-width: 768px) {
+    .doc-section {
+      flex-direction: row-reverse;
+      max-width: 600px;
+      padding: 1.5rem;
+    }
+
+    .doc-github,
+    .try-toast-btn {
+      width: 100%;
+      max-width: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .doc-section {
+      padding: 1rem 0.5rem;
+      margin: 1rem 0;
+    }
+
+    .doc-github,
+    .try-toast-btn,
+    .tab-button,
+    .position-button,
+    .control-button {
+      padding: 10px clamp(16px, 2vw, 20px);
+      font-size: 0.875rem;
+    }
   }
   
   .predemo-tabs {
@@ -240,9 +320,9 @@ style.textContent = `
   .step code {
     font-family: monospace;
     background: var(--code-bg);
-    padding: 0.5rem 1rem;
+    padding: clamp(0.35rem, 1vw, 0.5rem) clamp(0.75rem, 1.5vw, 1rem);
     border-radius: 6px;
-    font-size: 0.7rem;
+    font-size: clamp(0.65rem, 1.2vw, 0.7rem);
     color: var(--code-text);
     position: relative;
     cursor: pointer;
@@ -250,6 +330,8 @@ style.textContent = `
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
+    max-width: 500px;
   }
 
   .step code:hover {
@@ -295,67 +377,6 @@ style.textContent = `
     visibility: visible;
   }
  
-  .doc-github {
-    border: 1px solid #f1f1f1;
-    border-radius: 10px;
-    padding: 10px 48px;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-    background-color: transparent;
-    color: #333;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
-  }
-  
-  .doc-github:hover {
-    color: #fff;
-    border-color: #333;
-    // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .doc-github::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 100%;
-    background-color: #333;
-    transition: all 0.3s ease;
-    z-index: -1;
-  }
-  
-  .doc-github:hover::before {
-    width: 100%;
-  }
-  
-  /* Try Cross Toast button styling */
-  .try-toast-btn {
-    border: 1px solid #f1f1f1;
-    border-radius: 10px;
-    padding: 10px 28px;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-    background-color: #333;
-    color: #fff;
-    transition: all 0.3s ease;
-    cursor: pointer;
-  }
-  
-  .try-toast-btn:hover {
-    background-color: #555;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  a {
-    text-decoration: none;
-    color: #333;
-  }
-  
   .demo-tabs {
     display: flex;
     flex-direction: row;
@@ -379,13 +400,14 @@ style.textContent = `
   .tab-button {
     background: none;
     border: none;
-    padding: .25rem 4rem;
+    padding: clamp(0.25rem, 1vw, 0.4rem) clamp(2rem, 4vw, 4rem);
     color: var(--text-secondary);
     cursor: pointer;
-    font-size: 14px;
+    font-size: clamp(0.75rem, 1.5vw, 14px);
     font-weight: 600;
     border-radius: 10px;
     transition: all 0.2s ease;
+    white-space: nowrap;
   }
   
   .tab-button.active {
@@ -443,7 +465,7 @@ style.textContent = `
   .example-code {
     font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, monospace;
     color: var(--code-text);
-    font-size: 0.9rem;
+    font-size: clamp(0.8rem, 1.5vw, 0.9rem);
     line-height: 1.5;
     margin: 0;
     position: relative;
@@ -492,8 +514,8 @@ style.textContent = `
     background: var(--bg-primary);
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    padding: 0.75rem;
-    font-size: 0.875rem;
+    padding: clamp(0.5rem, 1.5vw, 0.75rem);
+    font-size: clamp(0.75rem, 1.5vw, 0.875rem);
     color: var(--text-primary);
     transition: all 0.2s ease;
     width: 100%;
@@ -512,6 +534,7 @@ style.textContent = `
   @media (max-width: 768px) {
     .position-grid {
       max-width: 300px;
+      gap: 0.5rem;
     }
   }
 
@@ -801,6 +824,8 @@ style.textContent = `
   @media (max-width: 768px) {
     .nav-header {
       padding: 0.5rem 1rem;
+      backdrop-filter: blur(8px);
+      background: rgba(var(--bg-primary-rgb), 0.8);
     }
     .nav-brand {
       font-size: 1rem;
@@ -810,13 +835,15 @@ style.textContent = `
     }
     .container {
       padding: 1rem;
+      padding-top: 4.5rem;
+      padding-bottom: 3.5rem;
     }
     .toast-header h1 {
       font-size: clamp(1.5rem, 4vw, 2rem);
     }
     .toast-header p {
-      width: 80%;
-      font-size: clamp(0.9rem, 2.5vw, 1rem);
+      width: 90%;
+      max-width: 400px;
     }
     .step {
       gap: 0.25rem;
@@ -838,6 +865,50 @@ style.textContent = `
     }
     .footer {
       padding: 1rem 0;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .nav-controls {
+      gap: 0.75rem;
+    }
+
+    .nav-header {
+      padding: 0.5rem;
+    }
+
+    .container {
+      padding: 0.75rem;
+      padding-top: 4rem;
+      padding-bottom: 3rem;
+    }
+
+    .doc-section {
+      padding: 0.75rem;
+    }
+
+    .position-grid {
+      max-width: 250px;
+    }
+
+    .tab-buttons {
+      max-width: 250px;
+    }
+
+    .tab-button {
+      padding: 0.25rem 1.5rem;
+    }
+
+    .toast-header p {
+      width: 95%;
+    }
+
+    .example-container {
+      padding: 0.75rem;
+    }
+
+    .step code::after {
+      font-size: 0.7rem;
     }
   }
 
