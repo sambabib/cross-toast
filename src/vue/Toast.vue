@@ -159,37 +159,49 @@ export default defineComponent({
 
 /* Toast content base styles */
 .toast-content {
-  background-color: var(--toast-bg);
+  background: var(--toast-bg);
+  background-image: radial-gradient(1139.98% 138.18% at 0 0, hsla(0, 0%, 100%, .25) 0, hsla(0, 0%, 100%, 0) 100%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   color: var(--toast-text);
   padding: 12px 24px;
-  border-radius: 20px;
-  box-shadow: 0 1px 2px var(--toast-shadow);
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-left: 1px solid;
-  border-bottom: 1px solid;
-  border-right: 1px solid;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   font-size: 12px;
   opacity: 0;
   will-change: transform, opacity;
-  /* Default transition for all toasts - smooth buttery curve */
   transition: transform 450ms cubic-bezier(0.25, 0.1, 0.25, 1.0),
     opacity 250ms ease-in-out;
 }
 
 /* Types */
 .success .toast-content {
-  border-color: var(--toast-success);
+  background: var(--toast-bg);
+  background-image:
+    radial-gradient(1139.98% 138.18% at 0 0, hsla(0, 0%, 100%, .25) 0, hsla(0, 0%, 100%, 0) 100%),
+    radial-gradient(circle at top left, rgba(76, 175, 80, 0.25), transparent 50%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .error .toast-content {
-  border-color: var(--toast-error);
+  background: var(--toast-bg);
+  background-image:
+    radial-gradient(1139.98% 138.18% at 0 0, hsla(0, 0%, 100%, .25) 0, hsla(0, 0%, 100%, 0) 100%),
+    radial-gradient(circle at top left, rgba(244, 67, 54, 0.25), transparent 50%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .info .toast-content {
-  border-color: var(--toast-info);
+  background: var(--toast-bg);
+  background-image:
+    radial-gradient(1139.98% 138.18% at 0 0, hsla(0, 0%, 100%, .25) 0, hsla(0, 0%, 100%, 0) 100%),
+    radial-gradient(circle at top left, rgba(33, 150, 243, 0.25), transparent 50%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Initial positions for entry animations */

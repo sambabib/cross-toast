@@ -1,4 +1,3 @@
-import { createRoot } from 'react-dom/client';
 import { ToastType } from '../types';
 import { toast as reactToast } from '../react';
 import { toast as vueToast } from '../vue';
@@ -138,6 +137,7 @@ style.textContent = `
     margin: 0 auto;
     padding: 1rem;
     padding-top: 5rem; /* Space for fixed header */
+    padding-bottom: 4rem; /* Space for fixed footer */
   }
 
   @media (min-width: 768px) {
@@ -158,7 +158,7 @@ style.textContent = `
   
   .toast-header h1 { 
     color: var(--text-primary); 
-    font-size: clamp(1.8rem, 5vw, 2rem);
+    font-size: clamp(2rem, 5vw, 2.4rem);
     line-height: 1.2;
     font-weight: bold;
     margin: 0 0 1rem;
@@ -167,7 +167,7 @@ style.textContent = `
   .toast-header p { 
     color: var(--text-secondary); 
     width: 40vw;
-    font-size: clamp(1rem, 2vw, 1.2rem);
+    font-size: clamp(.8rem, 2vw, .9rem);
     line-height: 1.4;
     margin: 0;
     max-width: 600px;
@@ -177,7 +177,7 @@ style.textContent = `
   
   .doc-section {
     display: flex;
-    flex-direction: row;
+    flex-direction: row-reverse;
     align-items: center;
     justify-content: center;
     gap: 2rem;
@@ -232,7 +232,7 @@ style.textContent = `
   
   .step p {
     margin: 0;
-    font-size: clamp(.8rem, 2vw, 1.1rem);
+    font-size: clamp(.8rem, 2vw, .9rem);
     color: var(--text-secondary);
     font-weight: 600;
   }
@@ -253,7 +253,7 @@ style.textContent = `
   }
 
   .step code:hover {
-    background: #e8e8e8;
+    background: #333;
   }
 
   .step code::after {
@@ -298,7 +298,7 @@ style.textContent = `
   .doc-github {
     border: 1px solid #f1f1f1;
     border-radius: 10px;
-    padding: 13px 48px;
+    padding: 10px 48px;
     text-decoration: none;
     font-size: 14px;
     font-weight: 600;
@@ -313,7 +313,7 @@ style.textContent = `
   .doc-github:hover {
     color: #fff;
     border-color: #333;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
   .doc-github::before {
@@ -336,7 +336,7 @@ style.textContent = `
   .try-toast-btn {
     border: 1px solid #f1f1f1;
     border-radius: 10px;
-    padding: 13px 28px;
+    padding: 10px 28px;
     text-decoration: none;
     font-size: 14px;
     font-weight: 600;
@@ -480,9 +480,12 @@ style.textContent = `
 
   .position-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
     margin-top: 1.5rem;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .position-button {
@@ -493,6 +496,7 @@ style.textContent = `
     font-size: 0.875rem;
     color: var(--text-primary);
     transition: all 0.2s ease;
+    width: 100%;
   }
 
   .position-button:hover {
@@ -507,24 +511,10 @@ style.textContent = `
 
   @media (max-width: 768px) {
     .position-grid {
-      grid-template-columns: repeat(2, 1fr);
+      max-width: 300px;
     }
   }
 
-  @media (max-width: 480px) {
-    .example-container {
-      padding: 1rem;
-    }
-
-    .example-code {
-      font-size: 0.8rem;
-    }
-
-    .position-button {
-      padding: 0.5rem;
-      font-size: 0.75rem;
-    }
-  }
   .controls button {
     background: #fdfefe;
     color: #333;
@@ -609,12 +599,18 @@ style.textContent = `
   }
 
   .footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     text-align: center;
-    padding: 2rem 0;
-    color: #666;
-    font-size: 0.9rem;
+    padding: 1rem 0;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
     font-weight: 500;
-    margin-top: 2rem;
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border-color);
+    z-index: 100;
   }
 
   .footer span {
@@ -947,12 +943,11 @@ container.innerHTML = `
     </div>
 
     <div class="doc-section">
-      <a href="https://github.com/sambabib/cross-toast" target="_blank" class="doc-github">View on Github</a>
+      <a href="https://github.com/sambabib/cross-toast" target="_blank" class="doc-github">View Documentation</a>
       <button class="try-toast-btn" onclick="window.tryToastDemo()">Try Cross Toast</button>
     </div>
 
     <div class="predemo-tabs">
-      <h2>Usage</h2>
       <div class="steps" id="framework-steps">
         <!-- Will be populated by updateStepperContent -->
       </div>
@@ -977,7 +972,6 @@ document.body.appendChild(container);
 const reactRoot = document.createElement('div');
 reactRoot.id = 'react-root';
 document.body.appendChild(reactRoot);
-const reactRootInstance = createRoot(reactRoot);
 
 // Framework and theme state
 let currentFramework: 'react' | 'vue' = 'react'; // Default
