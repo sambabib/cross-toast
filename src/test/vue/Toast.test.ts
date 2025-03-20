@@ -171,4 +171,50 @@ describe('VueToast', () => {
 
     vi.useRealTimers();
   });
+
+  // Show method tests
+  it('allows custom toast configuration via show method', () => {
+    const wrapper = mount(VueToast, {
+      props: {
+        message: 'Custom toast',
+        type: 'success',
+        position: 'top-left',
+        theme: 'dark'
+      }
+    });
+
+    expect(wrapper.text()).toContain('Custom toast');
+    expect(wrapper.find('.toast-content').classes()).toContain('success');
+    expect(wrapper.find('.toast-container').classes()).toContain('top-left');
+    expect(wrapper.find('.toast-container').classes()).toContain('dark');
+  });
+
+  it('handles custom duration in show method', async () => {
+    vi.useFakeTimers();
+    vi.clearAllTimers();
+
+    const wrapper = mount(VueToast, {
+      props: {
+        message: 'Custom duration',
+        duration: 200
+      }
+    });
+
+    await vi.advanceTimersByTimeAsync(10);
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.find('.toast-container').classes()).toContain('visible');
+
+    await vi.advanceTimersByTimeAsync(190);
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.find('.toast-content').classes()).toContain('exit');
+
+    await vi.advanceTimersByTimeAsync(350);
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.emitted('hide')).toHaveLength(1);
+
+    vi.useRealTimers();
+  });
 });

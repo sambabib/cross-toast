@@ -175,4 +175,53 @@ describe('ReactToast', () => {
 
     vi.useRealTimers();
   });
+
+  // Show method tests
+  it('allows custom toast configuration via show method', () => {
+    const { container } = render(
+      <ReactToast
+        message="Custom toast"
+        type="success"
+        position="top-left"
+        theme="dark"
+      />
+    );
+    const toastContainer = container.firstChild as HTMLElement;
+    const toastContent = container.querySelector(`.${styles.toastContent}`);
+
+    expect(screen.getByText('Custom toast')).toBeInTheDocument();
+    expect(toastContent).toHaveClass('success');
+    expect(toastContainer.className).toContain('topLeft');
+    expect(toastContainer.className).toContain('dark');
+  });
+
+  it('handles custom duration in show method', async () => {
+    vi.useFakeTimers();
+    const onHide = vi.fn();
+    render(
+      <ReactToast
+        message="Custom duration"
+        duration={200}
+        onHide={onHide}
+      />
+    );
+
+    await act(() => {
+      vi.advanceTimersByTime(15);
+    });
+
+    await act(() => {
+      vi.advanceTimersByTime(200);
+    });
+
+    expect(screen.getByText('Custom duration')).toBeInTheDocument();
+
+    await act(() => {
+      vi.advanceTimersByTime(350);
+    });
+
+    expect(screen.queryByText('Custom duration')).not.toBeInTheDocument();
+    expect(onHide).toHaveBeenCalledTimes(1);
+    vi.useRealTimers();
+  });
 });
