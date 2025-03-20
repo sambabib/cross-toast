@@ -146,7 +146,7 @@
   background: var(--toast-bg);
   background-image:
     radial-gradient(1139.98% 138.18% at 0 0, hsla(0, 0%, 100%, .25) 0, hsla(0, 0%, 100%, 0) 100%),
-    radial-gradient(circle at top left, rgba(76, 175, 80, 0.15), transparent 50%);
+    radial-gradient(circle at top left, rgba(76, 175, 80, 0.25), transparent 50%);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -154,7 +154,15 @@
   background: var(--toast-bg);
   background-image:
     radial-gradient(1139.98% 138.18% at 0 0, hsla(0, 0%, 100%, .25) 0, hsla(0, 0%, 100%, 0) 100%),
-    radial-gradient(circle at top left, rgba(244, 67, 54, 0.15), transparent 50%);
+    radial-gradient(circle at top left, rgba(244, 67, 54, 0.25), transparent 50%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.info {
+  background: var(--toast-bg);
+  background-image:
+    radial-gradient(1139.98% 138.18% at 0 0, hsla(0, 0%, 100%, .25) 0, hsla(0, 0%, 100%, 0) 100%),
+    radial-gradient(circle at top left, rgba(33, 150, 243, 0.25), transparent 50%);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
