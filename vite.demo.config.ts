@@ -19,6 +19,8 @@ export default defineConfig({
     rollupOptions: {
       input: resolve(__dirname, 'src/demo/index.html')
     },
+    assetsDir: 'assets',
+    sourcemap: true,
   },
   server: {
     port: 3000,
