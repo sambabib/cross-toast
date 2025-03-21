@@ -12,12 +12,12 @@ export default defineConfig({
       generateScopedName: '[name]__[local]__[hash:base64:5]',
     },
   },
+  root: 'src/demo',
   build: {
-    outDir: 'demo-dist',
+    outDir: '../../demo-dist',
+    emptyOutDir: true,
     rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'src/demo/index.html'),
-      },
+      input: 'src/demo/index.html',
     },
   },
   server: {
