@@ -14,10 +14,10 @@ export default defineConfig({
   },
   root: 'src/demo',
   build: {
-    outDir: '../../demo-dist',
+    outDir: resolve(__dirname, 'demo-dist'),
     emptyOutDir: true,
     rollupOptions: {
-      input: 'src/demo/index.html',
+      input: resolve(__dirname, 'src/demo/index.html')
     },
   },
   server: {
