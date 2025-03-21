@@ -38,7 +38,7 @@ style.textContent = `
   }
 
   body {
-    font-family: "Host Grotesk", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: "Poppins", system-ui;
     margin: 0;
     padding: 0;
     background: var(--bg-primary);
@@ -410,7 +410,6 @@ style.textContent = `
     font-size: clamp(0.75rem, 1.5vw, 14px);
     font-weight: 600;
     border-radius: 10px;
-    transition: all 0.2s ease;
     white-space: nowrap;
   }
   
@@ -1628,7 +1627,7 @@ function updateStepperContent(framework: 'react' | 'vue') {
 function tryToastDemo(): void {
   const type = currentToastType;
   const toast = getToast();
-  const message = `This is a ${type} toast notification! 🎯`;
+  const message = `This is a toasty ${type} toast! 🎯`;
 
   switch (type) {
     case 'success':

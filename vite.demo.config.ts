@@ -1,18 +1,11 @@
-// vite.config.ts
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import vue from '@vitejs/plugin-vue';
-import dts from 'vite-plugin-dts';
 import { resolve } from 'path';
 
 export default defineConfig({
-  plugins: [
-    react(),
-    vue(),
-    dts({
-      insertTypesEntry: true,
-    }),
-  ],
+  base: '/cross-toast/',
+  plugins: [react(), vue()],
   css: {
     modules: {
       localsConvention: 'camelCase',
@@ -20,19 +13,10 @@ export default defineConfig({
     },
   },
   build: {
-    lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
-      name: 'CrossToast',
-      fileName: (format) => `index.${format}.js`,
-    },
+    outDir: 'demo-dist',
     rollupOptions: {
-      external: ['react', 'react-dom', 'vue'],
-      output: {
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM',
-          vue: 'Vue',
-        },
+      input: {
+        main: resolve(__dirname, 'src/demo/index.html'),
       },
     },
   },
@@ -45,5 +29,4 @@ export default defineConfig({
       '@': resolve(__dirname, 'src'),
     },
   },
-  base: '/cross-toast/',
 });
