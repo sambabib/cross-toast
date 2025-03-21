@@ -3,8 +3,10 @@
   "compilerOptions": {
     "outDir": "dist",
     "declaration": true,
-    "types": ["node", "vite/client"]
+    "types": ["node", "vite/client", "vue"],
+    "allowJs": true,
+    "skipLibCheck": true
   },
-  "include": ["src/index.ts", "src/react/**/*", "src/vue/**/*"],
+  "include": ["src/index.ts", "src/react/**/*", "src/vue/**/*", "src/shims-vue.d.ts"],
   "exclude": ["src/demo/**/*", "**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts"]
 }
