@@ -1237,3 +1237,4 @@ export default {
   <meta name="author" content="Cross-Toast">
   <link rel="canonical" href="https://sambabib.github.io/cross-toast/">
 `;
+//# sourceMappingURL=index-wBdSOzbR.js.map
