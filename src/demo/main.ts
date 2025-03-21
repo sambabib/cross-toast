@@ -1691,22 +1691,20 @@ document.head.innerHTML += `
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://cross-toast-demo.vercel.app/">
+  <meta property="og:url" content="https://sambabib.github.io/cross-toast/>
   <meta property="og:title" content="Cross-Toast - Beautiful Toast Notifications for React and Vue">
   <meta property="og:description" content="A lightweight, customizable toast notification library with beautiful animations and theme support for React and Vue applications.">
-  <meta property="og:image" content="https://cross-toast-demo.vercel.app/og-image.png">
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://cross-toast-demo.vercel.app/">
+  <meta property="twitter:url" content="https://sambabib.github.io/cross-toast/">
   <meta property="twitter:title" content="Cross-Toast - Beautiful Toast Notifications for React and Vue">
   <meta property="twitter:description" content="A lightweight, customizable toast notification library with beautiful animations and theme support for React and Vue applications.">
-  <meta property="twitter:image" content="https://cross-toast-demo.vercel.app/og-image.png">
 
   <!-- Additional SEO Tags -->
   <meta name="keywords" content="toast notifications, react toast, vue toast, javascript notifications, ui components, web development">
   <meta name="robots" content="index, follow">
   <meta name="language" content="English">
   <meta name="author" content="Cross-Toast">
-  <link rel="canonical" href="https://cross-toast-demo.vercel.app/">
+  <link rel="canonical" href="https://sambabib.github.io/cross-toast/">
 `;
