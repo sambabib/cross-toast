@@ -30,7 +30,7 @@
     "dev:demo": "vite --config vite.demo.config.ts",
     "dev:lib": "vite --config vite.lib.config.ts",
     "build:lib": "tsc -p tsconfig.lib.json && vite build --config vite.lib.config.ts",
-    "build:demo": "tsc -p tsconfig.demo.json && vite build --config vite.demo.config.ts",
+    "build:demo": "vite build --config vite.demo.config.ts",
     "preview:demo": "vite preview --config vite.demo.config.ts",
     "test": "vitest --environment jsdom",
     "test:ui": "vitest --ui",
