@@ -9,6 +9,7 @@ export default defineConfig({
     react(),
     vue(),
     dts({
+      tsconfigPath: './tsconfig.lib.json',
       insertTypesEntry: true,
       include: ['src/!(demo)/**/*'],
     }),

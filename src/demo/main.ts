@@ -1,6 +1,6 @@
-import { ToastType } from '../types';
-import { toast as reactToast } from '../react';
-import { toast as vueToast } from '../vue';
+import { ToastType } from '../types.js';
+import { toast as reactToast } from '../react/index.js';
+import { toast as vueToast } from '../vue/index.js';
 
 // Add demo styles
 const style = document.createElement('style');
@@ -1072,7 +1072,7 @@ container.innerHTML = `
     </main>
 
     <footer class="footer">
-      Made with <span>❤️</span> by sambabib
+      Made with <span>❤️</span> by samuraikitts
     </footer>
   </div>
 `;

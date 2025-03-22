@@ -46,7 +46,7 @@
     "vue",
     "typescript"
   ],
-  "author": "sambabib",
+  "author": "samuraikitts",
   "license": "MIT",
   "peerDependencies": {
     "react": ">=16.8.0",
