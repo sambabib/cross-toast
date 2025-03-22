@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import type { ToastProps } from '../types';
+import type { ToastProps } from '../types.js';
 import styles from './Toast.module.css';
 
 export const ReactToast: React.FC<ToastProps & { theme?: 'light' | 'dark' | 'auto' }> = ({

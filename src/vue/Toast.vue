@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue';
-import type { ToastProps, ToastPosition } from '../types';
+import type { ToastProps, ToastPosition } from '../types.js';
 
 export default defineComponent({
   name: 'VueToast',
