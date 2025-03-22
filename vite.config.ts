@@ -6,6 +6,7 @@ import dts from 'vite-plugin-dts';
 import { resolve } from 'path';
 
 export default defineConfig({
+  base: './',
   plugins: [
     react(),
     vue(),
@@ -24,6 +25,7 @@ export default defineConfig({
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'CrossToast',
       fileName: (format) => `index.${format}.js`,
+      formats: ['es', 'cjs'],
     },
     rollupOptions: {
       external: ['react', 'react-dom', 'vue'],
@@ -46,5 +48,4 @@ export default defineConfig({
       '@': resolve(__dirname, 'src'),
     },
   },
-  base: '/cross-toast/',
 });

@@ -20,7 +20,7 @@ export default defineConfig({
         react: resolve(__dirname, 'src/react/index.ts'),
         vue: resolve(__dirname, 'src/vue/index.ts'),
       },
-      formats: ['es', 'umd'],
+      formats: ['es', 'cjs'],
     },
     rollupOptions: {
       external: ['react', 'react-dom', 'vue'],
