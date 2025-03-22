@@ -473,9 +473,12 @@ style.textContent = `
     margin: 0;
     position: relative;
     cursor: pointer;
-    max-width: 450px;
+    max-width: 100%;
     margin-left: auto;
     margin-right: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-x: auto;
   }
 
   .example-code:hover {
