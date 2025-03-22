@@ -1069,7 +1069,7 @@ container.innerHTML = `
     </main>
 
     <footer class="footer">
-      Made with <span>❤️</span> by sambabib
+      Made with <span>❤️</span> by samuraikitts
     </footer>
   </div>
 `;
