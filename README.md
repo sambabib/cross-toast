@@ -19,9 +19,7 @@ A lightweight, customizable toast notification library that works seamlessly acr
 
 ## Demo
 
-Check out the [live demo](https://cross-toast-demo.vercel.app) to see Cross-Toast in action.
-
-![Cross-Toast Demo](https://github.com/sambabib/cross-toast/raw/main/docs/images/demo.gif)
+Check out the [live demo](https://sambabib.github.io/cross-toast/) to see Cross-Toast in action.
 
 ## Installation
 
@@ -491,21 +489,6 @@ If toasts aren't appearing, check:
 - You're importing from the correct path (`cross-toast/react` or `cross-toast/vue`)
 - You have the correct CSS imported or included
 - There are no CSS conflicts with existing styles in your application
-
-#### Z-index Issues
-
-If toasts appear behind other elements:
-```css
-.toast-container {
-  z-index: 9999; /* Increase this value */
-}
-```
-
-#### Animation Issues
-
-If animations aren't working:
-- Ensure you haven't disabled animations in your browser
-- Check for CSS conflicts that might be overriding the animation properties
 
 
 ## License
