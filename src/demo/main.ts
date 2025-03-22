@@ -38,7 +38,7 @@ style.textContent = `
   }
 
   body {
-    font-family: "Host Grotesk", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: "Poppins", system-ui;
     margin: 0;
     padding: 0;
     background: var(--bg-primary);
@@ -410,7 +410,6 @@ style.textContent = `
     font-size: clamp(0.75rem, 1.5vw, 14px);
     font-weight: 600;
     border-radius: 10px;
-    transition: all 0.2s ease;
     white-space: nowrap;
   }
   
@@ -1628,7 +1627,7 @@ function updateStepperContent(framework: 'react' | 'vue') {
 function tryToastDemo(): void {
   const type = currentToastType;
   const toast = getToast();
-  const message = `This is a ${type} toast notification! 🎯`;
+  const message = `This is a toasty ${type} toast! 🎯`;
 
   switch (type) {
     case 'success':
@@ -1692,22 +1691,20 @@ document.head.innerHTML += `
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://cross-toast-demo.vercel.app/">
+  <meta property="og:url" content="https://sambabib.github.io/cross-toast/>
   <meta property="og:title" content="Cross-Toast - Beautiful Toast Notifications for React and Vue">
   <meta property="og:description" content="A lightweight, customizable toast notification library with beautiful animations and theme support for React and Vue applications.">
-  <meta property="og:image" content="https://cross-toast-demo.vercel.app/og-image.png">
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://cross-toast-demo.vercel.app/">
+  <meta property="twitter:url" content="https://sambabib.github.io/cross-toast/">
   <meta property="twitter:title" content="Cross-Toast - Beautiful Toast Notifications for React and Vue">
   <meta property="twitter:description" content="A lightweight, customizable toast notification library with beautiful animations and theme support for React and Vue applications.">
-  <meta property="twitter:image" content="https://cross-toast-demo.vercel.app/og-image.png">
 
   <!-- Additional SEO Tags -->
   <meta name="keywords" content="toast notifications, react toast, vue toast, javascript notifications, ui components, web development">
   <meta name="robots" content="index, follow">
   <meta name="language" content="English">
   <meta name="author" content="Cross-Toast">
-  <link rel="canonical" href="https://cross-toast-demo.vercel.app/">
+  <link rel="canonical" href="https://sambabib.github.io/cross-toast/">
 `;
