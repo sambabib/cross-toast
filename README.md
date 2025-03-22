@@ -1,8 +1,7 @@
 # Cross-Toast
 
 [![npm version](https://img.shields.io/npm/v/cross-toast.svg)](https://www.npmjs.com/package/cross-toast)
-[![Bundle Size](https://img.shields.io/bundlephobia/minzip/cross-toast)](https://bundlephobia.com/package/cross-toast)
-[![License](https://img.shields.io/npm/l/cross-toast.svg)](https://github.com/sambabib/cross-toast/blob/main/LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A lightweight, customizable toast notification library that works seamlessly across React and Vue.
 

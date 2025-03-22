@@ -522,9 +522,12 @@ Error generating stack: `+l.message+`
     margin: 0;
     position: relative;
     cursor: pointer;
-    max-width: 450px;
+    max-width: 100%;
     margin-left: auto;
     margin-right: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-x: auto;
   }
 
   .example-code:hover {
@@ -1184,12 +1187,12 @@ export default {
       <div class="step">
         <span class="step-number">1</span>
         <p>Install the package for your framework</p>
-        <code data-copy="npm install @cross-toast/react"><span>npm install @cross-toast/react</span><span class="copy-tooltip">Click to copy</span></code>
+        <code data-copy="npm install cross-toast"><span>npm install cross-toast</span><span class="copy-tooltip">Click to copy</span></code>
       </div>
       <div class="step">
         <span class="step-number">2</span>
         <p>Import and use in your component</p>
-        <code data-copy="import { toast } from '@cross-toast/react';"><span>import { toast } from '@cross-toast/react';</span><span class="copy-tooltip">Click to copy</span></code>
+        <code data-copy="import { toast } from 'cross-toast/react';"><span>import { toast } from 'cross-toast/react';</span><span class="copy-tooltip">Click to copy</span></code>
       </div>
       <div class="step">
         <span class="step-number">3</span>
@@ -1200,12 +1203,12 @@ export default {
       <div class="step">
         <span class="step-number">1</span>
         <p>Install the package for your framework</p>
-        <code data-copy="npm install @cross-toast/vue"><span>npm install @cross-toast/vue</span><span class="copy-tooltip">Click to copy</span></code>
+        <code data-copy="npm install cross-toast"><span>npm install cross-toast</span><span class="copy-tooltip">Click to copy</span></code>
       </div>
       <div class="step">
         <span class="step-number">2</span>
         <p>Import the toast in your component</p>
-        <code data-copy="import { toast } from '@cross-toast/vue';"><span>import { toast } from '@cross-toast/vue';</span><span class="copy-tooltip">Click to copy</span></code>
+        <code data-copy="import { toast } from 'cross-toast/vue';"><span>import { toast } from 'cross-toast/vue';</span><span class="copy-tooltip">Click to copy</span></code>
       </div>
       <div class="step">
         <span class="step-number">3</span>
@@ -1237,4 +1240,4 @@ export default {
   <meta name="author" content="Cross-Toast">
   <link rel="canonical" href="https://sambabib.github.io/cross-toast/">
 `;
-//# sourceMappingURL=index-BYxaC973.js.map
+//# sourceMappingURL=index-Bxew77UG.js.map

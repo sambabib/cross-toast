@@ -1582,12 +1582,12 @@ function updateStepperContent(framework: 'react' | 'vue') {
       <div class="step">
         <span class="step-number">1</span>
         <p>Install the package for your framework</p>
-        <code data-copy="npm install @cross-toast/react"><span>npm install @cross-toast/react</span><span class="copy-tooltip">Click to copy</span></code>
+        <code data-copy="npm install cross-toast"><span>npm install cross-toast</span><span class="copy-tooltip">Click to copy</span></code>
       </div>
       <div class="step">
         <span class="step-number">2</span>
         <p>Import and use in your component</p>
-        <code data-copy="import { toast } from '@cross-toast/react';"><span>import { toast } from '@cross-toast/react';</span><span class="copy-tooltip">Click to copy</span></code>
+        <code data-copy="import { toast } from 'cross-toast/react';"><span>import { toast } from 'cross-toast/react';</span><span class="copy-tooltip">Click to copy</span></code>
       </div>
       <div class="step">
         <span class="step-number">3</span>
@@ -1600,12 +1600,12 @@ function updateStepperContent(framework: 'react' | 'vue') {
       <div class="step">
         <span class="step-number">1</span>
         <p>Install the package for your framework</p>
-        <code data-copy="npm install @cross-toast/vue"><span>npm install @cross-toast/vue</span><span class="copy-tooltip">Click to copy</span></code>
+        <code data-copy="npm install cross-toast"><span>npm install cross-toast</span><span class="copy-tooltip">Click to copy</span></code>
       </div>
       <div class="step">
         <span class="step-number">2</span>
         <p>Import the toast in your component</p>
-        <code data-copy="import { toast } from '@cross-toast/vue';"><span>import { toast } from '@cross-toast/vue';</span><span class="copy-tooltip">Click to copy</span></code>
+        <code data-copy="import { toast } from 'cross-toast/vue';"><span>import { toast } from 'cross-toast/vue';</span><span class="copy-tooltip">Click to copy</span></code>
       </div>
       <div class="step">
         <span class="step-number">3</span>
