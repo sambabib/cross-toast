@@ -1,6 +1,6 @@
 import { createApp, h } from 'vue';
 import VueToast from './Toast.vue';
-import type { ToastProps } from '../types';
+import type { ToastProps } from '../types.js';
 
 // Store for tracking active toast apps
 interface ToastApp {

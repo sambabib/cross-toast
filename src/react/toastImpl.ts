@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { ReactToast } from './Toast.tsx';
-import type { ToastProps, ToastType } from '../types';
+import type { ToastProps, ToastType } from '../types.js';
 
 // Store for tracking active toast roots
 interface ToastRoot {
