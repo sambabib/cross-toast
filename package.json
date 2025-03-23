@@ -1,7 +1,7 @@
 {
   "name": "cross-toast",
   "private": false,
-  "version": "1.0.2",
+  "version": "1.0.3",
   "type": "module",
   "files": [
     "dist",
@@ -49,7 +49,7 @@
     "typescript"
   ],
   "author": "samuraikitts",
-  "license": "0BSD",
+  "license": "MIT",
   "peerDependencies": {
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0",
